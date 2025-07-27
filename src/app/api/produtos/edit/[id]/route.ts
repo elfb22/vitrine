@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
-import { writeFile, unlink } from 'fs/promises'
-import path from 'path'
-import fs from 'fs'
+import sharp from 'sharp'
+import { v4 as uuid } from 'uuid'
+import { supabase } from '@/lib/supabase'
 
 const prisma = new PrismaClient()
 
@@ -65,17 +65,19 @@ export async function PUT(
             sabores = []
         }
 
-        // Função para remover imagem antiga
+        // Função para remover imagem antiga do Supabase
         async function removeOldImage(fileName: string | null) {
             if (!fileName) return;
 
-            const imagePath = path.join(process.cwd(), 'public', 'images', 'produtos', fileName)
-
             try {
-                // Verificar se o arquivo existe antes de tentar excluir
-                if (fs.existsSync(imagePath)) {
-                    await unlink(imagePath)
-                    console.log(`Imagem removida: ${fileName}`)
+                const { error } = await supabase.storage
+                    .from('images')
+                    .remove([`produtos/${fileName}`])
+
+                if (error) {
+                    console.error(`Erro ao remover imagem antiga ${fileName}:`, error)
+                } else {
+                    console.log(`Imagem removida do Supabase: ${fileName}`)
                 }
             } catch (error) {
                 console.error(`Erro ao remover imagem antiga ${fileName}:`, error)
@@ -86,22 +88,51 @@ export async function PUT(
         let nomeImagem = imagemAtual // Manter imagem atual por padrão
 
         if (imagem && imagem.size > 0) {
-            // Nova imagem foi enviada - remover imagem anterior se existir
-            if (produtoAtual.imagem) {
-                await removeOldImage(produtoAtual.imagem)
+            try {
+                // Nova imagem foi enviada - remover imagem anterior se existir
+                if (produtoAtual.imagem) {
+                    await removeOldImage(produtoAtual.imagem)
+                }
+
+                // Converter File para Buffer
+                const imagemBytes = await imagem.arrayBuffer()
+
+                // Processar imagem com sharp
+                const processedImageBuffer = await sharp(Buffer.from(imagemBytes))
+                    .resize({ width: 1200, fit: 'contain' })
+                    .webp({ quality: 95 })
+                    .toBuffer()
+
+                console.log(`Tamanho da imagem após compressão: ${processedImageBuffer.byteLength} bytes`)
+
+                // Criar nome único para o arquivo
+                const filename = `${uuid()}.webp`
+
+                // Upload para Supabase
+                const { data: imageData, error: imageError } = await supabase.storage
+                    .from('images')
+                    .upload(`produtos/${filename}`, processedImageBuffer, {
+                        contentType: 'image/webp',
+                    })
+
+                if (imageError) {
+                    console.error("Erro ao fazer upload da imagem:", imageError)
+                    return NextResponse.json({
+                        success: false,
+                        message: "Erro ao fazer upload da imagem"
+                    }, { status: 500 })
+                }
+
+                nomeImagem = filename
+                console.log(`Imagem atualizada no Supabase: produtos/${filename}`)
+
+            } catch (imageError) {
+                console.error("Erro ao processar/salvar imagem:", imageError)
+                return NextResponse.json({
+                    success: false,
+                    message: "Erro ao processar imagem"
+                }, { status: 500 })
             }
-
-            const bytes = await imagem.arrayBuffer()
-            const buffer = Buffer.from(bytes)
-
-            // Gerar nome único para a imagem
-            const timestamp = Date.now()
-            const extension = path.extname(imagem.name)
-            nomeImagem = `produto_${timestamp}${extension}`
-
-            // Salvar nova imagem
-            const imagePath = path.join(process.cwd(), 'public', 'images', 'produtos', nomeImagem)
-            await writeFile(imagePath, buffer)
         }
 
         // Primeiro, deletar sabores existentes
@@ -161,5 +192,7 @@ export async function PUT(
             { message: 'Erro interno do servidor' },
             { status: 500 }
         )
+    } finally {
+        await prisma.$disconnect()
     }
 }

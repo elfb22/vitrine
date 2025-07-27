@@ -126,6 +126,7 @@ const ProdutosAdmin: React.FC = () => {
     const [produtoParaExcluir, setProdutoParaExcluir] = useState<Produto | null>(null)
     const [isDeleting, setIsDeleting] = useState(false)
     const [loading, setLoading] = useState(false)
+    const bucketUrl = process.env.NEXT_PUBLIC_BUCKET_URL
 
     const fetchCategorias = async (): Promise<void> => {
         setLoading(true)
@@ -334,7 +335,8 @@ const ProdutosAdmin: React.FC = () => {
                                     {/* Imagem do Produto - Altura maior para mostrar mais da imagem */}
                                     <div className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
                                         <img
-                                            src={"/images/produtos/" + produto.imagem}
+                                            //  src={`${bucketUrl}/imagens/${selectedItem?.imagem}`}
+                                            src={`${bucketUrl}/${produto.imagem}`}
                                             alt={produto.nome}
                                             className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                                         />

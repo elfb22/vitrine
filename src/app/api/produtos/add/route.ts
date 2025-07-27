@@ -3,8 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import sharp from 'sharp'
 import { v4 as uuid } from 'uuid'
-import { writeFile, mkdir } from 'fs/promises'
-import path from 'path'
+import { supabase } from '@/lib/supabase'
 
 const prisma = new PrismaClient()
 
@@ -61,18 +60,23 @@ export async function POST(request: NextRequest) {
                 // Criar nome único para o arquivo
                 const filename = `${uuid()}.webp`
 
-                // Definir caminho para salvar
-                const uploadDir = path.join(process.cwd(), 'public', 'images', 'produtos')
-                const filePath = path.join(uploadDir, filename)
+                // Upload para Supabase
+                const { data: imageData, error: imageError } = await supabase.storage
+                    .from('images')
+                    .upload(`produtos/${filename}`, processedImageBuffer, {
+                        contentType: 'image/webp',
+                    })
 
-                // Criar diretório se não existir
-                await mkdir(uploadDir, { recursive: true })
-
-                // Salvar arquivo
-                await writeFile(filePath, processedImageBuffer)
+                if (imageError) {
+                    console.error("Erro ao fazer upload da imagem:", imageError)
+                    return NextResponse.json({
+                        success: false,
+                        message: "Erro ao fazer upload da imagem"
+                    }, { status: 500 })
+                }
 
                 imagemPath = filename
-                console.log(`Imagem salva em: ${filePath}`)
+                console.log(`Imagem salva no Supabase: produtos/${filename}`)
 
             } catch (imageError) {
                 console.error("Erro ao processar/salvar imagem:", imageError)

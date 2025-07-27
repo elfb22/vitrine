@@ -57,7 +57,7 @@ export default function ProdutoCard({ product }: ProductCardProps) {
         formState: { errors },
         reset
     } = useForm<FormData>()
-
+    const bucketUrl = process.env.NEXT_PUBLIC_BUCKET_URL
     // Calcular a porcentagem de desconto
     const discountPercentage = product.originalPrice
         ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -91,7 +91,7 @@ export default function ProdutoCard({ product }: ProductCardProps) {
             {/* Product Image */}
             <div className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
                 <img
-                    src={product.image}
+                    src={`${bucketUrl}/${product.image}`}
                     alt={product.name}
                     className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                 />
