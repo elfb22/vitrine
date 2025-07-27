@@ -8,10 +8,10 @@ const prisma = new PrismaClient();
 // DELETE - Excluir categoria
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: any } }
+    { params }: any
 ) {
     try {
-        const { id } = params;
+        const { id } = await params;
 
         if (!id) {
             return NextResponse.json(

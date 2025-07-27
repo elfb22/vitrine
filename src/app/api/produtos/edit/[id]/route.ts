@@ -9,10 +9,10 @@ const prisma = new PrismaClient()
 
 export async function PUT(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: any
 ) {
     try {
-        const { id } = params
+        const { id } = await params
         const formData = await request.formData()
 
         const nome = formData.get('nome') as string

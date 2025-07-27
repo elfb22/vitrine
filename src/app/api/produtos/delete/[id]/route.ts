@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { unlink } from 'fs/promises'
@@ -8,10 +9,10 @@ const prisma = new PrismaClient()
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: any
 ) {
     try {
-        const { id } = params
+        const { id } = await params
 
         // Validar se o ID foi fornecido
         if (!id) {

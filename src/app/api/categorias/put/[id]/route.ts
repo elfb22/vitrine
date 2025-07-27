@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function PUT(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: any
 ) {
     try {
-        const { id } = params;
+        const { id } = await params;
         const { name } = await request.json();
         const trimmedName = name?.trim();
 
