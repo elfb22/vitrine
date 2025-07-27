@@ -67,14 +67,14 @@ export default function ProdutoCard({ product }: ProductCardProps) {
         // Criar mensagem para WhatsApp
         const mensagem = `Olá! Gostaria de fazer um pedido:
 
-*Produto:* ${product.name}
-*Preço:* R$ ${product.price.toFixed(2).replace(".", ",")}
-*Sabor:* ${data.sabor}
-*Nome:* ${data.nome}
-*Endereço:* ${data.endereco}
-*Forma de Pagamento:* ${data.formaPagamento}${data.observacoes ? `\n*Observações:* ${data.observacoes}` : ''}
+            *Produto:* ${product.name}
+            *Preço:* R$ ${product.price.toFixed(2).replace(".", ",")}
+            *Sabor:* ${data.sabor}
+            *Nome:* ${data.nome}
+            *Endereço:* ${data.endereco}
+            *Forma de Pagamento:* ${data.formaPagamento}${data.observacoes ? `\n*Observações:* ${data.observacoes}` : ''}
 
-Obrigado!`
+            Obrigado!`
 
         // Abrir WhatsApp com a mensagem
         const numeroWhatsApp = "5532999392474" // Substitua pelo seu número
