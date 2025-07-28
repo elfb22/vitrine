@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import { useEffect, useState } from "react"
@@ -41,7 +42,7 @@ export default function EditProductDialog({
     const [imagemSelecionada, setImagemSelecionada] = useState<string | null>(null);
     const [imagemArquivo, setImagemArquivo] = useState<File | null>(null);
     const [imagemAtual, setImagemAtual] = useState<string | null>(null);
-
+    const bucketUrl = process.env.NEXT_PUBLIC_BUCKET_URL
     const {
         control,
         handleSubmit,
@@ -118,7 +119,7 @@ export default function EditProductDialog({
             // Configurar imagem atual
             if (produto.imagem) {
                 setImagemAtual(produto.imagem)
-                setImagemSelecionada(`/images/produtos/${produto.imagem}`)
+                setImagemSelecionada(`${produto.imagem}`)
             }
         }
     }, [produto, open, setValue, categorias]) // Adicionar categorias como dependência
@@ -440,7 +441,7 @@ export default function EditProductDialog({
                             <div className="relative">
                                 <div className="w-full max-w-xs mx-auto rounded-xl overflow-hidden border border-gray-700 bg-gray-800">
                                     <img
-                                        src={imagemSelecionada}
+                                        src={`${bucketUrl}/${imagemSelecionada}`}
                                         alt="Preview do produto"
                                         width={300}
                                         height={200}
@@ -448,6 +449,7 @@ export default function EditProductDialog({
                                         style={{ maxHeight: '200px' }}
                                     />
                                 </div>
+
 
                                 {/* Overlay com botões */}
                                 <div className="absolute inset-0 bg-black/60 opacity-0 hover:opacity-100 transition-opacity duration-200 rounded-xl flex items-center justify-center gap-3">
