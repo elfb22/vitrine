@@ -64,19 +64,17 @@ export default function ProdutoCard({ product }: ProductCardProps) {
         : 0
 
     const onSubmit = (data: FormData) => {
-        const mensagem = `🛒 *Novo Pedido via Vitrine* 🛒
+        const mensagem = ` *PEDIDO NOVO RECEBIDO!*
 
 👤 *Nome:* ${data.nome}
-📦 *Produto:* *${product.name}*
-🍭 *Sabor:* *${data.sabor}*
-🏠 *Endereço:* ${data.endereco}
-💰 *Preço:* R$ ${product.price.toFixed(2).replace(".", ",")}
-💳 *Forma de Pagamento:* ${data.formaPagamento}
-${data.observacoes ? `📝 *Observações:* ${data.observacoes}` : ''}
+📌 *Produto:* *${product.name}*
+🎨 *Sabor:* *${data.sabor}*
+🏡 *Endereço:* ${data.endereco}
+💵 *Preço:* R$ ${product.price.toFixed(2).replace(".", ",")}
+💳 *Pagamento:* ${data.formaPagamento}
+${data.observacoes ? `🗒️ *Observações:* ${data.observacoes}` : ''}
 
-
-
-Obrigado! 🙏`
+🙏 Obrigado!`
 
         const numeroWhatsApp = "5532999392474"
         const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`
