@@ -54,11 +54,10 @@ export default function Banner() {
                                     className="w-1/2 md:w-1/3 mx-auto mb-4"
                                 />
                                 <p className="text-2xl md:text-3xl mb-6 text-cyan-100 font-light tracking-wide">
-                                    Desperte sua magia interior ✨
+                                    Desperte sua essência com autenticidade.✨
                                 </p>
                                 <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                                    Descubra uma experiência única com nossos produtos místicos. Cada sabor é uma jornada, cada momento é
-                                    uma aventura.
+                                    Cada pod carrega uma experiência única de sabor e qualidade. Escolha o que combina com o seu momento.
                                 </p>
                             </div>
 
