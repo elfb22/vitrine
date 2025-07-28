@@ -64,27 +64,28 @@ export default function ProdutoCard({ product }: ProductCardProps) {
         : 0
 
     const onSubmit = (data: FormData) => {
-        // Criar mensagem para WhatsApp
-        const mensagem = `Olá! Gostaria de fazer um pedido:
+        const mensagem = `🛒 *Novo Pedido via Vitrine* 🛒
 
-            *Produto:* ${product.name}
-            *Preço:* R$ ${product.price.toFixed(2).replace(".", ",")}
-            *Sabor:* ${data.sabor}
-            *Nome:* ${data.nome}
-            *Endereço:* ${data.endereco}
-            *Forma de Pagamento:* ${data.formaPagamento}${data.observacoes ? `\n*Observações:* ${data.observacoes}` : ''}
+👤 *Nome:* ${data.nome}
+📦 *Produto:* *${product.name}*
+🍭 *Sabor:* *${data.sabor}*
+🏠 *Endereço:* ${data.endereco}
+💰 *Preço:* R$ ${product.price.toFixed(2).replace(".", ",")}
+💳 *Forma de Pagamento:* ${data.formaPagamento}
+${data.observacoes ? `📝 *Observações:* ${data.observacoes}` : ''}
 
-            Obrigado!`
 
-        // Abrir WhatsApp com a mensagem
-        const numeroWhatsApp = "5532999392474" // Substitua pelo seu número
+
+Obrigado! 🙏`
+
+        const numeroWhatsApp = "5532999392474"
         const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`
         window.open(url, '_blank')
 
-        // Fechar dialog e resetar form
         setIsOpen(false)
         reset()
     }
+
 
     return (
         <div className="group bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-cyan-900/20 transition-all duration-500 overflow-hidden border border-gray-700 hover:border-cyan-900/30 transform hover:-translate-y-2 flex flex-col">
