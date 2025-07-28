@@ -64,8 +64,7 @@ export default function ProdutoCard({ product }: ProductCardProps) {
         : 0
 
     const onSubmit = (data: FormData) => {
-        const onSubmit = (data: FormData) => {
-            const mensagem = `*NOVO PEDIDO RECEBIDO*
+        const mensagem = `*NOVO PEDIDO RECEBIDO*
 
 *Nome:* ${data.nome}
 *Produto:* ${product.name}
@@ -78,14 +77,14 @@ ${data.observacoes ? `*Observações:* ${data.observacoes}` : ''}
 Seu pedido está sendo preparado com cuidado.
 Obrigado por escolher a ElfBPods.`
 
-            const numeroWhatsApp = "5532999392474"
-            const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`
-            window.open(url, '_blank')
+        const numeroWhatsApp = "5532999392474"
+        const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`
+        window.open(url, '_blank')
 
-            setIsOpen(false)
-            reset()
-        }
+        setIsOpen(false)
+        reset()
     }
+
     return (
         <div className="group bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-cyan-900/20 transition-all duration-500 overflow-hidden border border-gray-700 hover:border-cyan-900/30 transform hover:-translate-y-2 flex flex-col">
             {/* Product Image */}
