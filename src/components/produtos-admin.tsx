@@ -2,11 +2,13 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 import React, { useEffect, useState } from 'react'
-import { Edit, Trash2, Eye, Tag, Package, Coffee, AlertTriangle, X } from "lucide-react"
+import { Edit, Trash2, Eye, Tag, Package, Coffee, AlertTriangle, X, Plus } from "lucide-react"
 import Image from "next/image"
 import EditProductDialog from './edit-produto'
+
 import { showToast, ToastType } from '@/utils/toastUtils'
 import Loading from '@/app/loading'
+import AddProductDialog from './add-produto-form'
 
 // Tipos corrigidos
 interface Sabor {
@@ -121,6 +123,7 @@ const ProdutosAdmin: React.FC = () => {
     const [categorias, setCategorias] = useState<Categoria[]>([])
     const [categoriaAtiva, setCategoriaAtiva] = useState<number | "todas">("todas")
     const [editDialogOpen, setEditDialogOpen] = useState(false)
+    const [addDialogOpen, setAddDialogOpen] = useState(false)
     const [produtoParaEditar, setProdutoParaEditar] = useState<Produto | null>(null)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [produtoParaExcluir, setProdutoParaExcluir] = useState<Produto | null>(null)
@@ -129,19 +132,16 @@ const ProdutosAdmin: React.FC = () => {
     const bucketUrl = process.env.NEXT_PUBLIC_BUCKET_URL
 
     const fetchCategorias = async (): Promise<void> => {
-        setLoading(true)
         try {
             const response = await fetch('/api/categorias/get')
             const data: Categoria[] = await response.json()
             setCategorias(data)
-            setLoading(false)
         } catch (error) {
             console.error('Erro ao buscar categorias:', error)
         }
     }
 
     const fetchProdutos = async (): Promise<void> => {
-        setLoading(true)
         try {
             const response = await fetch('/api/produtos/get')
             const data: Produto[] = await response.json()
@@ -152,7 +152,6 @@ const ProdutosAdmin: React.FC = () => {
                 return dateB - dateA // Decrescente: mais recente primeiro
             })
             setProdutos(produtosOrdenados)
-            setLoading(false)
         } catch (error) {
             console.error('Erro ao buscar produtos:', error)
         }
@@ -163,9 +162,33 @@ const ProdutosAdmin: React.FC = () => {
         setEditDialogOpen(true)
     }
 
-    const handleProductUpdated = (): void => {
-        // Atualizar a lista após edição/adição
+    // FUNÇÃO ATUALIZADA: Agora recebe o novo produto diretamente
+    const handleProductAdded = (novoProduto: Produto): void => {
+        console.log('Produto recebido para adicionar:', novoProduto) // Debug
+
+        // Adiciona o novo produto no início da lista (mais recente primeiro)
+        setProdutos(prevProdutos => {
+            const novaLista = [novoProduto, ...prevProdutos]
+            console.log('Nova lista de produtos:', novaLista) // Debug
+            return novaLista
+        })
+
+        // Log para verificar se a função foi chamada
+        console.log('handleProductAdded executado')
+    }
+
+    // Função chamada após editar produto - mantém a mesma lógica
+    useEffect(() => {
         fetchProdutos()
+    }, [])
+    const handleProductUpdated = (): void => {
+        // Atualizar a lista após edição
+        fetchProdutos()
+    }
+
+    // Função para abrir o dialog de adicionar produto
+    const handleAdicionarProduto = (): void => {
+        setAddDialogOpen(true)
     }
 
     // Função para abrir o dialog de exclusão
@@ -215,8 +238,21 @@ const ProdutosAdmin: React.FC = () => {
     }
 
     useEffect(() => {
-        fetchProdutos()
-        fetchCategorias()
+        const loadData = async () => {
+            setLoading(true)
+            try {
+                await Promise.all([
+                    fetchProdutos(),
+                    fetchCategorias()
+                ])
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        loadData()
     }, [])
 
     // Filtrar produtos pela categoria ativa (já ordenados)
@@ -238,6 +274,10 @@ const ProdutosAdmin: React.FC = () => {
         return categoria ? categoria.nome : "Categoria"
     }
 
+    if (loading) {
+        return <Loading />
+    }
+
     if (produtos.length === 0) {
         return (
             <div className="p-16 text-center">
@@ -248,10 +288,13 @@ const ProdutosAdmin: React.FC = () => {
                 <p className="text-gray-400 mb-8 max-w-md mx-auto">
                     Comece adicionando seu primeiro produto e construa sua loja!
                 </p>
-                <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-800 to-gray-900 rounded-full text-cyan-400 font-medium border border-cyan-900/30">
-                    <Package size={18} />
-                    Clique em "Novo Produto" para começar
-                </div>
+                <button
+                    onClick={handleAdicionarProduto}
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-700 hover:to-cyan-800 rounded-xl text-white font-medium transition-all duration-300 shadow-lg hover:shadow-cyan-900/30"
+                >
+                    <Plus size={18} />
+                    Adicionar Primeiro Produto
+                </button>
             </div>
         )
     }
@@ -261,7 +304,7 @@ const ProdutosAdmin: React.FC = () => {
             {loading && <Loading />}
             <div className="md:px-8 ">
                 <div className="mb-5">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
                             <div className='flex items-center gap-4'>
                                 <h2 className="md:text-3xl text-2xl font-bold text-cyan-400 mb-2">Seus Produtos</h2>
@@ -271,6 +314,7 @@ const ProdutosAdmin: React.FC = () => {
                             </div>
                             <p className="text-gray-400">Gerencie todos os produtos da sua loja</p>
                         </div>
+
                     </div>
                 </div>
 
@@ -313,10 +357,7 @@ const ProdutosAdmin: React.FC = () => {
                         <p className="text-gray-400 mb-8 max-w-md mx-auto">
                             Não há produtos cadastrados na categoria "{obterNomeCategoriaAtiva()}".
                         </p>
-                        <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-800 to-gray-900 rounded-full text-cyan-400 font-medium border border-cyan-900/30">
-                            <Package size={18} />
-                            Adicione produtos nesta categoria
-                        </div>
+
                     </div>
                 ) : (
                     /* Grid de Produtos */
@@ -334,6 +375,7 @@ const ProdutosAdmin: React.FC = () => {
                                 >
                                     {/* Imagem do Produto - Altura maior para mostrar mais da imagem */}
                                     <div className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
+
                                         <img
                                             //  src={`${bucketUrl}/imagens/${selectedItem?.imagem}`}
                                             src={`${bucketUrl}/${produto.imagem}`}
@@ -431,6 +473,13 @@ const ProdutosAdmin: React.FC = () => {
                         })}
                     </div>
                 )}
+
+                {/* Dialog de Adição de Produto - PROP ATUALIZADA */}
+                <AddProductDialog
+                    open={addDialogOpen}
+                    onOpenChange={setAddDialogOpen}
+                    onProductAdded={handleProductAdded} // Agora recebe o produto diretamente
+                />
 
                 {/* Dialog de Edição */}
                 <EditProductDialog

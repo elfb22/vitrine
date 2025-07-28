@@ -87,7 +87,7 @@ export default function ProdutoCard({ product }: ProductCardProps) {
     }
 
     return (
-        <div className="group bg-gray-900 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-cyan-900/20 transition-all duration-500 overflow-hidden border border-gray-800 hover:border-cyan-900/50 transform hover:-translate-y-2">
+        <div className="group bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-cyan-900/20 transition-all duration-500 overflow-hidden border border-gray-700 hover:border-cyan-900/30 transform hover:-translate-y-2 flex flex-col">
             {/* Product Image */}
             <div className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
                 <img
@@ -117,6 +117,7 @@ export default function ProdutoCard({ product }: ProductCardProps) {
                         </p>
                     )}
                 </div>
+
                 <div className="min-h-[65px]">
                     {product.sabores && product.sabores.length > 0 && (
                         <div className="mb-4">

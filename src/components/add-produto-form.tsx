@@ -9,7 +9,7 @@ import { showToast, ToastType } from "@/utils/toastUtils"
 interface AddProductDialogProps {
     open: boolean
     onOpenChange: (open: boolean) => void
-    onProductAdded?: () => void
+    onProductAdded?: (novoProduto: any) => void // Mudança: agora recebe o produto criado
 }
 
 type Categorias = {
@@ -38,6 +38,8 @@ export default function AddProductDialog({
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [imagemSelecionada, setImagemSelecionada] = useState<string | null>(null);
     const [imagemArquivo, setImagemArquivo] = useState<File | null>(null);
+    const [loadingCategorias, setLoadingCategorias] = useState(false);
+
     const {
         control,
         handleSubmit,
@@ -56,35 +58,36 @@ export default function AddProductDialog({
     })
 
     const fetchCategorias = async () => {
+        setLoadingCategorias(true);
         try {
             const response = await fetch('/api/categorias/get')
             const data = await response.json()
             setCategorias(data)
         } catch (error) {
             console.error('Erro ao buscar categorias:', error)
+            showToast('Erro ao carregar categorias', ToastType.ERROR);
+        } finally {
+            setLoadingCategorias(false);
         }
     }
 
+    // Buscar categorias sempre que o dialog abrir
     useEffect(() => {
-        fetchCategorias()
-    }, [])
+        if (open) {
+            fetchCategorias()
+        }
+    }, [open])
 
-    // const handleImageChange = (e: any) => {
-    //     const file = e.target.files?.[0]
-    //     if (file) {
-    //         const imageUrl = URL.createObjectURL(file);
-    //         setImagePreview(imageUrl)
-    //     }
-    // }
     const handleImageChange = (event: any) => {
         const file = event.target.files[0];
         if (file) {
             setImagemArquivo(file);
-            setValue('imagem', file); // ← Adicione esta linha
+            setValue('imagem', file);
             const imageUrl = URL.createObjectURL(file);
             setImagemSelecionada(imageUrl);
         }
     };
+
     const addSabor = () => {
         if (currentSabor.trim() && !sabores.includes(currentSabor.trim())) {
             setSabores(prev => [...prev, currentSabor.trim()])
@@ -134,8 +137,19 @@ export default function AddProductDialog({
             const result = await response.json()
             console.log("Produto cadastrado com sucesso:", result)
 
-            // Success callback
-            onProductAdded?.()
+            // MUDANÇA: Passar o produto criado para o callback
+            // Assumindo que sua API retorna o produto criado em result.produto
+            if (onProductAdded && result.produto) {
+                // Formatando o produto para coincidir com a estrutura esperada
+                const novoProduto = {
+                    ...result.produto,
+                    sabores: sabores.map((nome, index) => ({ id: index, nome })), // Formato dos sabores
+                    created_at: new Date().toISOString() // Data atual
+                }
+                onProductAdded(novoProduto)
+            }
+
+            // Fechar dialog
             onOpenChange(false)
 
             // Reset form
@@ -143,10 +157,11 @@ export default function AddProductDialog({
             setSabores([])
             setCurrentSabor("")
             setImagePreview(null)
+            setImagemSelecionada(null)
+            setImagemArquivo(null)
 
             // Success notification
             showToast('Produto cadastrado com sucesso!', ToastType.SUCCESS);
-
 
         } catch (error) {
             console.error('Erro ao cadastrar produto:', error)
@@ -235,12 +250,15 @@ export default function AddProductDialog({
                             render={({ field }) => (
                                 <select
                                     {...field}
-                                    className={`w-full px-4 py-3 bg-gray-800 border rounded-xl text-white focus:ring-1 focus:outline-none transition-colors ${errors.categoria
+                                    disabled={loadingCategorias}
+                                    className={`w-full px-4 py-3 bg-gray-800 border rounded-xl text-white focus:ring-1 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${errors.categoria
                                         ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
                                         : 'border-gray-700 focus:border-cyan-500 focus:ring-cyan-500'
                                         }`}
                                 >
-                                    <option value="">Selecione uma categoria</option>
+                                    <option value="">
+                                        {loadingCategorias ? 'Carregando categorias...' : 'Selecione uma categoria'}
+                                    </option>
                                     {categorias.map(category => (
                                         <option key={category.id} value={category.nome}>
                                             {category.nome}
@@ -251,6 +269,9 @@ export default function AddProductDialog({
                         />
                         {errors.categoria && (
                             <p className="text-sm text-red-400">{errors.categoria.message}</p>
+                        )}
+                        {loadingCategorias && (
+                            <p className="text-sm text-cyan-400">Carregando categorias...</p>
                         )}
                     </div>
 
@@ -477,10 +498,17 @@ export default function AddProductDialog({
                         </button>
                         <button
                             type="submit"
-                            disabled={isSubmitting}
-                            className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-700 hover:to-cyan-800 text-white font-medium rounded-xl transition-all duration-300 shadow-lg hover:shadow-cyan-900/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={isSubmitting || loadingCategorias}
+                            className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-700 hover:to-cyan-800 text-white font-medium rounded-xl transition-all duration-300 shadow-lg hover:shadow-cyan-900/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
-                            {isSubmitting ? "Cadastrando..." : "Adicionar Produto"}
+                            {isSubmitting ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    Cadastrando...
+                                </>
+                            ) : (
+                                "Adicionar Produto"
+                            )}
                         </button>
                     </div>
                 </form>

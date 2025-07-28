@@ -94,7 +94,7 @@ export default function Produtos() {
         price: produto.preco_desconto,
         originalPrice: produto.preco_original,
         description: produto.descricao,
-        image: `/images/produtos/${produto.imagem}`,
+        image: `${produto.imagem}`,
         category: produto.categoria,
         sabores: produto.sabores?.map(sabor => sabor.nome) || []
     })
@@ -171,13 +171,16 @@ export default function Produtos() {
                 </div>
             ) : (
                 /* Grid de produtos */
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 items-stretch">
-                    {produtosFiltrados.map(produto => (
-                        <ProdutoCard
-                            key={produto.id}
-                            product={transformarProduto(produto)}
-                        />
-                    ))}
+                <div className="md:px-8">
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 ">
+                        {produtosFiltrados.map(produto => (
+                            <ProdutoCard
+                                key={produto.id}
+                                product={transformarProduto(produto)}
+                            />
+                        ))}
+                    </div>
                 </div>
             )}
         </div>
