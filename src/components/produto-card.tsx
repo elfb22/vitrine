@@ -64,23 +64,18 @@ export default function ProdutoCard({ product }: ProductCardProps) {
         : 0
 
     const onSubmit = (data: FormData) => {
-        const mensagem = `🔥 CHEGOU UM PEDIDO NOVO! 🔥*
+        const mensagem = `⚠️ NOVO PEDIDO RECEBIDO ⚠️
 
- *Nome:* ${data.nome}
+👤 Cliente: ${data.nome}
+📦 Produto: ${product.name}
+🍓 Sabor: ${data.sabor}
+📍 Endereço: ${data.endereco}
+💰 Valor: R$ ${product.price.toFixed(2).replace(".", ",")}
+💳 Pagamento: ${data.formaPagamento}
+${data.observacoes ? `📝 Observações: ${data.observacoes}` : ''}
 
- *Produto:* *${product.name}*
-
- *Sabor:* *${data.sabor}*
-
- *Endereço:* ${data.endereco}
-
- *Preço:* R$ ${product.price.toFixed(2).replace(".", ",")}
-
- *Pagamento:* ${data.formaPagamento}
- 
-${data.observacoes ? ` *Observações:* ${data.observacoes}` : ''}
-
- Obrigado!`
+🚚 Seu pedido está sendo preparado com cuidado.
+✨ Obrigado por escolher a ElfBPods.`
 
         const numeroWhatsApp = "5532999392474"
         const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`
@@ -89,8 +84,6 @@ ${data.observacoes ? ` *Observações:* ${data.observacoes}` : ''}
         setIsOpen(false)
         reset()
     }
-
-
     return (
         <div className="group bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-cyan-900/20 transition-all duration-500 overflow-hidden border border-gray-700 hover:border-cyan-900/30 transform hover:-translate-y-2 flex flex-col">
             {/* Product Image */}
