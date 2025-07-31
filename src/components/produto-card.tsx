@@ -35,6 +35,7 @@ interface ProductCardProps {
         image?: string
         category: string
         sabores: any
+
     }
 }
 
@@ -44,6 +45,7 @@ interface FormData {
     sabor: string
     formaPagamento: string
     observacoes?: string
+    referencia: string
 }
 
 export default function ProdutoCard({ product }: ProductCardProps) {
@@ -77,6 +79,7 @@ export default function ProdutoCard({ product }: ProductCardProps) {
 *Produto:* ${product.name}
 *Sabor:* ${data.sabor}
 *Endereço:* ${data.endereco}
+*Ponto de Referência:* ${data.referencia}
 *Valor:* R$ ${product.price.toFixed(2).replace(".", ",")}
 *Forma de Pagamento:* ${data.formaPagamento}
 ${data.observacoes ? `*Observações:* ${data.observacoes}` : ''}
@@ -240,6 +243,18 @@ Obrigado por escolher a ElfBPods.`
                                         {errors.endereco && (
                                             <p className="text-red-400 text-sm">{errors.endereco.message}</p>
                                         )}
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="referencia" className="text-gray-200">
+                                            Ponto de referência
+                                        </Label>
+                                        <Input
+                                            id="referencia"
+                                            {...register("referencia")}
+                                            className="bg-gray-800 border-gray-700 text-gray-100"
+                                            placeholder="Proximo ao hospital..."
+                                        />
+
                                     </div>
 
                                     {/* Sabor */}
