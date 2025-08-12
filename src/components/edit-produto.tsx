@@ -3,7 +3,7 @@
 'use client'
 import { useEffect, useState } from "react"
 import { useForm, Controller } from "react-hook-form"
-import { X, Plus, Upload, DollarSign, Package, Tag, FileText, Palette } from "lucide-react"
+import { X, Plus, Upload, DollarSign, Package, Tag, FileText, Palette, ToggleLeft, ToggleRight } from "lucide-react"
 import Image from "next/image"
 import { showToast, ToastType } from "@/utils/toastUtils"
 
@@ -26,6 +26,7 @@ type ProductFormData = {
     precoDesconto: string
     descricao: string
     imagem: File | null
+    status: 'ATIVO' | 'DESATIVADO' // Adicionar status ao tipo
 }
 
 export default function EditProductDialog({
@@ -48,6 +49,7 @@ export default function EditProductDialog({
         handleSubmit,
         setValue,
         reset,
+        watch, // Adicionar watch para observar o valor do status
         formState: { errors }
     } = useForm<ProductFormData>({
         defaultValues: {
@@ -56,9 +58,13 @@ export default function EditProductDialog({
             precoOriginal: "",
             precoDesconto: "",
             descricao: "",
-            imagem: null
+            imagem: null,
+            status: "ATIVO" // Valor padrão
         }
     })
+
+    // Observar o valor atual do status
+    const currentStatus = watch('status')
 
     const fetchCategorias = async () => {
         try {
@@ -111,6 +117,9 @@ export default function EditProductDialog({
             setValue('precoDesconto', produto.preco_desconto?.toString() || '')
             setValue('descricao', produto.descricao || '')
 
+            // Configurar status - usar ATIVO como padrão se não existir
+            setValue('status', produto.status || 'ATIVO')
+
             // Configurar sabores
             if (produto.sabores && Array.isArray(produto.sabores)) {
                 setSabores(produto.sabores.map((sabor: any) => sabor.nome || sabor))
@@ -157,6 +166,7 @@ export default function EditProductDialog({
             formData.append('categoria', data.categoria)
             formData.append('precoOriginal', data.precoOriginal)
             formData.append('descricao', data.descricao)
+            formData.append('status', data.status) // Adicionar status ao FormData
 
             if (data.precoDesconto) {
                 formData.append('precoDesconto', data.precoDesconto)
@@ -290,36 +300,64 @@ export default function EditProductDialog({
                         )}
                     </div>
 
-                    {/* Categoria */}
-                    <div className="space-y-2">
-                        <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
-                            <Tag size={16} />
-                            Categoria
-                        </label>
-                        <Controller
-                            name="categoria"
-                            control={control}
-                            rules={{ required: "Categoria é obrigatória" }}
-                            render={({ field }) => (
-                                <select
-                                    {...field}
-                                    className={`w-full px-4 py-3 bg-gray-800 border rounded-xl text-white focus:ring-1 focus:outline-none transition-colors ${errors.categoria
-                                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                                        : 'border-gray-700 focus:border-cyan-500 focus:ring-cyan-500'
-                                        }`}
-                                >
-                                    <option value="">Selecione uma categoria</option>
-                                    {categorias.map(category => (
-                                        <option key={category.id} value={category.nome}>
-                                            {category.nome}
-                                        </option>
-                                    ))}
-                                </select>
+                    {/* Categoria e Status */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Categoria */}
+                        <div className="space-y-2">
+                            <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+                                <Tag size={16} />
+                                Categoria
+                            </label>
+                            <Controller
+                                name="categoria"
+                                control={control}
+                                rules={{ required: "Categoria é obrigatória" }}
+                                render={({ field }) => (
+                                    <select
+                                        {...field}
+                                        className={`w-full px-4 py-3 bg-gray-800 border rounded-xl text-white focus:ring-1 focus:outline-none transition-colors ${errors.categoria
+                                            ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                                            : 'border-gray-700 focus:border-cyan-500 focus:ring-cyan-500'
+                                            }`}
+                                    >
+                                        <option value="">Selecione uma categoria</option>
+                                        {categorias.map(category => (
+                                            <option key={category.id} value={category.nome}>
+                                                {category.nome}
+                                            </option>
+                                        ))}
+                                    </select>
+                                )}
+                            />
+                            {errors.categoria && (
+                                <p className="text-sm text-red-400">{errors.categoria.message}</p>
                             )}
-                        />
-                        {errors.categoria && (
-                            <p className="text-sm text-red-400">{errors.categoria.message}</p>
-                        )}
+                        </div>
+
+                        {/* Status */}
+                        <div className="space-y-2">
+                            <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+                                {currentStatus === 'ATIVO' ?
+                                    <ToggleRight size={16} className="text-green-400" /> :
+                                    <ToggleLeft size={16} className="text-red-400" />
+                                }
+                                Status do Produto
+                            </label>
+                            <Controller
+                                name="status"
+                                control={control}
+                                rules={{ required: "Status é obrigatório" }}
+                                render={({ field }) => (
+                                    <select
+                                        {...field}
+                                        className={`w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white focus:ring-1 focus:outline-none transition-colors focus:border-cyan-500 focus:ring-cyan-500`}
+                                    >
+                                        <option value="ATIVO">🟢 Ativo</option>
+                                        <option value="DESATIVADO">🔴 Desativado</option>
+                                    </select>
+                                )}
+                            />
+                        </div>
                     </div>
 
                     {/* Preços */}
@@ -449,7 +487,6 @@ export default function EditProductDialog({
                                         style={{ maxHeight: '200px' }}
                                     />
                                 </div>
-
 
                                 {/* Overlay com botões */}
                                 <div className="absolute inset-0 bg-black/60 opacity-0 hover:opacity-100 transition-opacity duration-200 rounded-xl flex items-center justify-center gap-3">

@@ -23,11 +23,20 @@ export async function PUT(
         const saboresString = formData.get('sabores') as string
         const imagem = formData.get('imagem') as File | null
         const imagemAtual = formData.get('imagemAtual') as string | null
+        const status = formData.get('status') as string // Adicionar status
 
         // Validações básicas
         if (!nome || !categoriaNome || !precoOriginal || !descricao) {
             return NextResponse.json(
                 { message: 'Campos obrigatórios não preenchidos' },
+                { status: 400 }
+            )
+        }
+
+        // Validar status
+        if (status && !['ATIVO', 'DESATIVADO'].includes(status)) {
+            return NextResponse.json(
+                { message: 'Status inválido. Use ATIVO ou DESATIVADO' },
                 { status: 400 }
             )
         }
@@ -148,6 +157,11 @@ export async function PUT(
             },
             preco_original: precoOriginal,
             descricao,
+        }
+
+        // Adicionar status se fornecido
+        if (status) {
+            dadosAtualizacao.status = status as 'ATIVO' | 'DESATIVADO'
         }
 
         // Adicionar preço com desconto se fornecido

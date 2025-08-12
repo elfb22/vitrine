@@ -21,6 +21,7 @@ interface Produto {
     imagem: string
     categoria_id: number
     created_at: string
+    status: string // Campo adicionado para o status
 }
 
 interface Categoria {
@@ -40,14 +41,16 @@ export default function Produtos() {
             const response = await fetch('/api/produtos/get')
             const data: Produto[] = await response.json()
 
-            // Ordenar produtos por data de criação decrescente (mais recentes primeiro)
-            const produtosOrdenados = data.sort((a, b) => {
-                const dateA = new Date(a.created_at).getTime()
-                const dateB = new Date(b.created_at).getTime()
-                return dateB - dateA // Decrescente: mais recente primeiro
-            })
+            // Filtrar apenas produtos com status ATIVO e ordenar por data de criação decrescente
+            const produtosAtivos = data
+                .filter(produto => produto.status === 'ATIVO')
+                .sort((a, b) => {
+                    const dateA = new Date(a.created_at).getTime()
+                    const dateB = new Date(b.created_at).getTime()
+                    return dateB - dateA // Decrescente: mais recente primeiro
+                })
 
-            setProdutos(produtosOrdenados)
+            setProdutos(produtosAtivos)
         } catch (error) {
             console.error('Erro ao buscar produtos:', error)
         }
@@ -75,7 +78,7 @@ export default function Produtos() {
         loadData()
     }, [])
 
-    // Filtrar produtos pela categoria ativa
+    // Filtrar produtos pela categoria ativa (já filtrados por status ATIVO)
     const produtosFiltrados = activeCategory === "all"
         ? produtos
         : produtos.filter((produto) => produto.categoria_id === activeCategory)
@@ -120,7 +123,7 @@ export default function Produtos() {
                 </div>
                 <h3 className="text-2xl font-bold text-cyan-100 mb-3">Nenhum produto encontrado</h3>
                 <p className="text-gray-400 max-w-md mx-auto">
-                    Não há produtos disponíveis no momento. Volte em breve para conferir novidades!
+                    Não há produtos ativos disponíveis no momento. Volte em breve para conferir novidades!
                 </p>
             </div>
         )
@@ -166,13 +169,12 @@ export default function Produtos() {
                     </div>
                     <h3 className="text-2xl font-bold text-cyan-100 mb-3">Nenhum produto encontrado</h3>
                     <p className="text-gray-400 max-w-md mx-auto">
-                        Não há produtos cadastrados na categoria "{obterNomeCategoriaAtiva()}".
+                        Não há produtos ativos cadastrados na categoria "{obterNomeCategoriaAtiva()}".
                     </p>
                 </div>
             ) : (
                 /* Grid de produtos */
                 <div className="md:px-8">
-
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 ">
                         {produtosFiltrados.map(produto => (
                             <ProdutoCard

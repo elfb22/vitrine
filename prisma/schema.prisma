@@ -36,6 +36,7 @@ model produto {
   updated_at     DateTime  @updatedAt
   categoria      categoria @relation(fields: [categoria_id], references: [id])
   sabores        sabor[]
+  status         status?
 }
 
 model sabor {
@@ -43,4 +44,9 @@ model sabor {
   nome       String
   produto_id Int
   produto    produto @relation(fields: [produto_id], references: [id])
+}
+
+enum status {
+  ATIVO
+  DESATIVADO
 }

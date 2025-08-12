@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @next/next/no-img-element */
 'use client'
@@ -27,6 +28,7 @@ interface Produto {
     imagem: string
     categoria_id: number
     created_at: string
+    status: string // ⚠️ MUDANÇA: Definindo como string ao invés de any
 }
 
 interface Categoria {
@@ -120,6 +122,7 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
 // Componente principal
 const ProdutosAdmin: React.FC = () => {
     const [produtos, setProdutos] = useState<Produto[]>([])
+    console.log('Produtos:', produtos)
     const [categorias, setCategorias] = useState<Categoria[]>([])
     const [categoriaAtiva, setCategoriaAtiva] = useState<number | "todas">("todas")
     const [editDialogOpen, setEditDialogOpen] = useState(false)
@@ -145,6 +148,18 @@ const ProdutosAdmin: React.FC = () => {
         try {
             const response = await fetch('/api/produtos/get')
             const data: Produto[] = await response.json()
+
+            // ⚠️ DEBUG: Verificar se o status está vindo da API
+            console.log('Dados brutos da API:', data)
+            data.forEach((produto, index) => {
+                console.log(`Produto ${index + 1}:`, {
+                    id: produto.id,
+                    nome: produto.nome,
+                    status: produto.status,
+                    statusType: typeof produto.status
+                })
+            })
+
             // Ordenar produtos por data de criação decrescente (mais recentes primeiro)
             const produtosOrdenados = data.sort((a, b) => {
                 const dateA = new Date(a.created_at).getTime()
@@ -181,6 +196,7 @@ const ProdutosAdmin: React.FC = () => {
     useEffect(() => {
         fetchProdutos()
     }, [])
+
     const handleProductUpdated = (): void => {
         // Atualizar a lista após edição
         fetchProdutos()
@@ -272,6 +288,47 @@ const ProdutosAdmin: React.FC = () => {
         if (categoriaAtiva === "todas") return "Todas"
         const categoria = categorias.find((cat) => cat.id === categoriaAtiva)
         return categoria ? categoria.nome : "Categoria"
+    }
+
+    // ⚠️ FUNÇÃO PARA OBTER STATUS FORMATADO
+    const obterStatusFormatado = (status: any): string => {
+        console.log('Status recebido:', status, 'Tipo:', typeof status) // Debug
+
+        if (!status) return 'Sem status'
+
+        // Se for string, retorna diretamente
+        if (typeof status === 'string') return status
+
+        // Se for número, converte para string correspondente
+        if (typeof status === 'number') {
+            switch (status) {
+                case 1: return 'Ativo'
+                case 0: return 'Inativo'
+                case 2: return 'Em estoque'
+                case 3: return 'Fora de estoque'
+                default: return `Status ${status}`
+            }
+        }
+
+        // Se for objeto, tenta acessar alguma propriedade
+        if (typeof status === 'object') {
+            return status.nome || status.status || JSON.stringify(status)
+        }
+
+        return String(status)
+    }
+
+    // ⚠️ FUNÇÃO PARA OBTER COR DO STATUS
+    const obterCorStatus = (status: any): string => {
+        const statusFormatado = obterStatusFormatado(status).toLowerCase()
+
+        if (statusFormatado.includes('ativo') || statusFormatado.includes('estoque')) {
+            return 'text-green-400'
+        } else if (statusFormatado.includes('inativo') || statusFormatado.includes('fora')) {
+            return 'text-red-400'
+        } else {
+            return 'text-yellow-400'
+        }
     }
 
     if (loading) {
@@ -377,7 +434,6 @@ const ProdutosAdmin: React.FC = () => {
                                     <div className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
 
                                         <img
-                                            //  src={`${bucketUrl}/imagens/${selectedItem?.imagem}`}
                                             src={`${bucketUrl}/${produto.imagem}`}
                                             alt={produto.nome}
                                             className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
@@ -390,11 +446,19 @@ const ProdutosAdmin: React.FC = () => {
                                             </div>
                                         )}
 
+                                        {/* ⚠️ BADGE DE STATUS CORRIGIDO */}
+                                        <div className="absolute top-3 right-3 bg-gray-900/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold z-10">
+                                            <p className={obterCorStatus(produto.status)}>
+                                                {obterStatusFormatado(produto.status)}
+                                            </p>
+                                        </div>
+
                                         {/* Badge de Categoria */}
                                         <div className="absolute bottom-3 left-3 bg-gray-900/80 backdrop-blur-sm text-cyan-400 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
                                             <Tag size={12} />
                                             {obterNomeCategoria(produto.categoria_id)}
                                         </div>
+
                                     </div>
 
                                     {/* Informações do Produto - flex-1 para ocupar o espaço restante */}
@@ -403,6 +467,11 @@ const ProdutosAdmin: React.FC = () => {
                                         <h3 className="font-bold text-gray-100 mb-2 text-lg line-clamp-2 group-hover:text-cyan-400 transition-colors duration-300">
                                             {produto.nome}
                                         </h3>
+
+                                        {/* ⚠️ DEBUG: Mostrar status no corpo do card também */}
+                                        <div className="mb-2 text-xs text-gray-500">
+                                            Status: {obterStatusFormatado(produto.status)} (Tipo: {typeof produto.status})
+                                        </div>
 
                                         {/* Descrição */}
                                         {produto.descricao && (
