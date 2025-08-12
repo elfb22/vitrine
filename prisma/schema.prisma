@@ -36,7 +36,7 @@ model produto {
   updated_at     DateTime  @updatedAt
   categoria      categoria @relation(fields: [categoria_id], references: [id])
   sabores        sabor[]
-  status         status?
+  status         status? @default(ATIVO)
 }
 
 model sabor {

@@ -431,12 +431,12 @@ const ProdutosAdmin: React.FC = () => {
                                     className="group bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-cyan-900/20 transition-all duration-500 overflow-hidden border border-gray-700 hover:border-cyan-900/30 transform hover:-translate-y-2 flex flex-col"
                                 >
                                     {/* Imagem do Produto - Altura maior para mostrar mais da imagem */}
-                                    <div className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
+                                    <div className="relative aspect-square bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden flex items-center justify-center p-2">
 
                                         <img
                                             src={`${bucketUrl}/${produto.imagem}`}
                                             alt={produto.nome}
-                                            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                                            className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-500 rounded-lg"
                                         />
 
                                         {/* Badge de Desconto */}

@@ -97,27 +97,27 @@ Obrigado por escolher a ElfBPods.`
     return (
         <>
             <div className="group bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-cyan-900/20 transition-all duration-500 overflow-hidden border border-gray-700 hover:border-cyan-900/30 transform hover:-translate-y-2 flex flex-col h-full">
-                {/* Product Image */}
-                <div className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden flex-shrink-0">
+                {/* Product Image - VERSÃO PADRONIZADA */}
+                <div className="relative aspect-square bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden flex-shrink-0 flex items-center justify-center ">
                     <div
-                        className="relative w-full h-full cursor-pointer group/image"
+                        className="relative w-full h-full cursor-pointer group/image flex items-center justify-center"
                         onClick={() => setIsImageModalOpen(true)}
                     >
                         <img
                             src={`${bucketUrl}/${product.image}`}
                             alt={product.name}
-                            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                            className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-500 rounded-lg"
                         />
 
                         {/* Overlay com ícone de visualização */}
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg">
                             <Eye className="text-white w-8 h-8" />
                         </div>
                     </div>
 
-                    {/* Discount Badge */}
+                    {/* Discount Badge - Ajustado para a nova estrutura */}
                     {discountPercentage > 0 && (
-                        <div className="absolute top-3 left-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-semibold z-10">
+                        <div className="absolute top-2 left-2 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-semibold z-10">
                             -{discountPercentage}%
                         </div>
                     )}
