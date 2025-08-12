@@ -469,9 +469,9 @@ const ProdutosAdmin: React.FC = () => {
                                         </h3>
 
                                         {/* ⚠️ DEBUG: Mostrar status no corpo do card também */}
-                                        <div className="mb-2 text-xs text-gray-500">
+                                        {/* <div className="mb-2 text-xs text-gray-500">
                                             Status: {obterStatusFormatado(produto.status)} (Tipo: {typeof produto.status})
-                                        </div>
+                                        </div> */}
 
                                         {/* Descrição */}
                                         {produto.descricao && (
