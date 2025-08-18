@@ -99,13 +99,13 @@ export default function LoginForm() {
 
                         {/* Logo */}
                         <div className="text-center mb-8">
-                            <div className="flex justify-center mb-6">
+                            <div className="flex justify-center ">
                                 <img
                                     src={
-                                        '/images/logotipo.png'
+                                        '/images/gpt.png'
                                     }
                                     height={200}
-                                    width={200}
+                                    width={250}
                                     alt="Logo"
                                 />
                             </div>

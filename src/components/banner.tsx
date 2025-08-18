@@ -49,9 +49,9 @@ export default function Banner() {
                                     </span>
                                 </h1> */}
                                 <img
-                                    src="/images/logotipo.png"
+                                    src="/images/gpt.png"
                                     alt="Mystical Wizard Banner"
-                                    className="w-1/2 md:w-1/3 mx-auto mb-4"
+                                    className="w-1/2 md:w-1/3 mx-auto -mb-6"
                                 />
                                 <p className="text-2xl md:text-3xl mb-6 text-cyan-100 font-light tracking-wide">
                                     Desperte sua essência com autenticidade.✨

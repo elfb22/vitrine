@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ELFBPODS",
+  title: "ELFPODS",
   description: "Sua vitrine online de pods com variedade, qualidade e atendimento premium.",
 };
 

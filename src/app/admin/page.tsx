@@ -89,7 +89,7 @@ export default function AdminDashboard() {
                             <div className="flex items-center">
                                 <div className="relative w-32 h-32 ">
                                     <Image
-                                        src="/images/logotipo.png"
+                                        src="/images/gpt.png"
                                         alt="ELFPODS Logo"
                                         fill
                                         className="object-contain "
