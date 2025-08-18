@@ -210,7 +210,7 @@ export default function LoginForm() {
 
                     {/* Footer Info */}
                     <div className="text-center mt-6 text-gray-400/70 text-sm">
-                        <p>© 2025 ELFBPODS. Todos os direitos reservados.</p>
+                        <p>© 2025 ELFPODS. Todos os direitos reservados.</p>
                     </div>
                 </div>
             </div>
