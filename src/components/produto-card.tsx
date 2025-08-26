@@ -317,6 +317,8 @@ Obrigado por escolher a ElfBPods.`
                                         <div className="text-gray-300 text-sm space-y-1">
                                             <p><strong>Produto:</strong> {product.name}</p>
                                             <p><strong>Preço:</strong> R$ {product.price.toFixed(2).replace(".", ",")}</p>
+                                            <p><strong>Taxa de entrega:</strong> R$ 7,00</p>
+                                            <p className="text-[10px] text-gray-500">Para retirada, desconsidere a taxa de entrega.</p>
                                         </div>
                                     </div>
 
