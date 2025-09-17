@@ -258,7 +258,7 @@ export default function TabelaVendas({
                                             <td className="p-4">
                                                 <div className="flex items-center justify-center space-x-2">
                                                     <button
-                                                        onClick={() => abrirDialogEdicao(venda)}
+                                                        // onClick={() => abrirDialogEdicao(venda)}
                                                         className="p-2 bg-blue-500 hover:bg-blue-600 rounded-md transition-colors hover:cursor-pointer"
                                                         title="Editar venda"
                                                     >
