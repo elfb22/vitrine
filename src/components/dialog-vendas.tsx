@@ -402,8 +402,8 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                                     <option value="">Selecione a forma de pagamento</option>
                                     <option value="PIX">PIX</option>
                                     <option value="DINHEIRO">Dinheiro</option>
-                                    <option value="CREDITO">Cartão de Crédito</option>
-                                    <option value="DEBITO">Cartão de Débito</option>
+                                    <option value="CARTAO_CREDITO">Cartão de Crédito</option>
+                                    <option value="CARTAO_DEBITO">Cartão de Débito</option>
                                     <option value="FIADO">Fiado</option>
                                 </select>
                                 {errors.forma_pagamento && (
