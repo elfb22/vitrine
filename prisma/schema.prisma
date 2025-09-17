@@ -12,8 +12,12 @@ model user {
   id         Int      @id @default(autoincrement())
   email      String   @unique
   senha      String?
+  nome       String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  // Relacionamento com vendas (quem recebeu)
+  vendas venda[]
 }
 
 model categoria {
@@ -36,17 +40,49 @@ model produto {
   updated_at     DateTime  @updatedAt
   categoria      categoria @relation(fields: [categoria_id], references: [id])
   sabores        sabor[]
-  status         status? @default(ATIVO)
+  status         status?   @default(ATIVO)
 }
 
 model sabor {
   id         Int     @id @default(autoincrement())
   nome       String
   produto_id Int
+  estoque    Int     @default(0) // Quantidade em estoque
   produto    produto @relation(fields: [produto_id], references: [id])
+
+  // Relacionamento com vendas
+  vendas venda[]
+}
+
+// Tabela simplificada de vendas
+model venda {
+  id              Int              @id @default(autoincrement())
+  sabor_id        Int
+  cliente_nome    String // Nome do cliente como string
+  quantidade      Int
+  valor           Float
+  data_venda      DateTime         @default(now())
+  forma_pagamento forma_pagamento?
+  recebido_por    Int // ID do user que recebeu
+  taxa_entrega    Boolean          @default(false) // Checkbox para taxa de entrega
+  fiado           Boolean          @default(false)
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
+
+  // Relacionamentos
+  sabor     sabor @relation(fields: [sabor_id], references: [id])
+  recebedor user  @relation(fields: [recebido_por], references: [id])
 }
 
 enum status {
   ATIVO
   DESATIVADO
+}
+
+enum forma_pagamento {
+  DINHEIRO
+  PIX
+  CARTAO_CREDITO
+  CARTAO_DEBITO
+  FIADO
 }

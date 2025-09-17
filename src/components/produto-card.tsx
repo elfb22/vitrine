@@ -163,12 +163,13 @@ Obrigado por escolher a ElfBPods.`
 
                     {/* Tags de sabores */}
                     <div className="mb-4">
+                        <h1 className="text-cyan-400 font-semibold mb-2">Sabores disponíveis:</h1>
                         {product.sabores && product.sabores.length > 0 && (
                             <div className="flex flex-wrap gap-1">
                                 {product.sabores.map((sabor: any, index: any) => (
                                     <span
                                         key={index}
-                                        className="px-2 py-1 bg-gray-800 text-gray-300 text-xs rounded-full border border-gray-700"
+                                        className="px-2 py-1 bg-gray-800 text-gray-300 text-xs rounded-full border border-cyan-400"
                                     >
                                         {sabor}
                                     </span>

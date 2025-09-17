@@ -122,7 +122,6 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
 // Componente principal
 const ProdutosAdmin: React.FC = () => {
     const [produtos, setProdutos] = useState<Produto[]>([])
-    console.log('Produtos:', produtos)
     const [categorias, setCategorias] = useState<Categoria[]>([])
     const [categoriaAtiva, setCategoriaAtiva] = useState<number | "todas">("todas")
     const [editDialogOpen, setEditDialogOpen] = useState(false)
@@ -292,7 +291,7 @@ const ProdutosAdmin: React.FC = () => {
 
     // ⚠️ FUNÇÃO PARA OBTER STATUS FORMATADO
     const obterStatusFormatado = (status: any): string => {
-        console.log('Status recebido:', status, 'Tipo:', typeof status) // Debug
+
 
         if (!status) return 'Sem status'
 

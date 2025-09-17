@@ -2,7 +2,7 @@
 'use client'
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Plus, Tag, LogOut, Settings, User, Bell, X, Hash, Sparkles } from "lucide-react"
+import { Plus, Tag, LogOut, Settings, User, Bell, X, Hash, Sparkles, CircleDollarSign } from "lucide-react"
 import Image from "next/image"
 import CategoryDialog from "@/components/add-categoria-form"
 import AddProductDialog from "@/components/add-produto-form"
@@ -65,17 +65,9 @@ export default function AdminDashboard() {
         // fetchCategories()
     }
 
-    // Mostrar loading enquanto verifica autenticação
-    // if (!isAuthenticated) {
-    //     return (
-    //         <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-    //             <div className="text-center">
-    //                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
-    //                 <p className="text-gray-400">Verificando autenticação...</p>
-    //             </div>
-    //         </div>
-    //     )
-    // }
+    const handleNavigateVendas = () => {
+        router.push("/admin/vendas")
+    }
 
     return (
         <div className="min-h-screen">
@@ -83,7 +75,7 @@ export default function AdminDashboard() {
             <div className="relative overflow-hidden bg-gradient-to-b from-gray-900 to-gray-950">
                 <div className="relative container mx-auto md:px-20 px-5 ">
                     {/* Top Navigation Bar */}
-                    <div className="flex items-center justify-between md:mb-8 ">
+                    <div className="flex items-center justify-between  ">
                         {/* Left Side - Logo and Title */}
                         <div className="flex items-center gap-6">
                             <div className="flex items-center">
@@ -136,6 +128,13 @@ export default function AdminDashboard() {
                             >
                                 <Tag size={22} />
                                 Gerenciar Categorias
+                            </button>
+                            <button
+                                onClick={handleNavigateVendas}
+                                className="flex items-center cursor-pointer gap-3 px-8 py-4 bg-gradient-to-r from-cyan-700 to-cyan-600 hover:from-cyan-600 hover:to-cyan-500 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-cyan-900/30 transform hover:-translate-y-1"
+                            >
+                                <CircleDollarSign size={22} />
+                                Vendas
                             </button>
                         </div>
                     </div>
@@ -195,11 +194,7 @@ export default function AdminDashboard() {
 
                 {/* Products Section */}
                 <div className="bg-gray-900 rounded-3xl shadow-xl border border-gray-800 md:p-10 p-3">
-
                     <ProdutosAdmin />
-
-
-
                 </div>
             </div>
         </div>
