@@ -272,7 +272,7 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
 
     return (
         <Dialog open={aberto} onOpenChange={onAbertoChange} >
-            <DialogContent className="bg-gray-800 border border-gray-700 text-white max-w-md max-h-[90vh]" style={{ overflow: 'hidden' }}>
+            <DialogContent className="bg-gray-800 border border-gray-700 text-white  max-h-[90vh]" style={{ overflow: 'hidden' }}>
                 <div className="overflow-y-auto max-h-[80vh] pr-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#374151 transparent' }}>
                     <DialogHeader>
                         <DialogTitle className="text-cyan-400 text-xl flex items-center gap-2">

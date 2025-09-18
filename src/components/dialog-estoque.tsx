@@ -36,9 +36,10 @@ interface DialogEstoqueProps {
     aberto: boolean
     onAbertoChange: (aberto: boolean) => void
     produto: Produto | null
+    onEstoqueAtualizado?: (produtoId: number, novoEstoque: EstoqueData) => void // Nova prop
 }
 
-export default function DialogEstoque({ aberto, onAbertoChange, produto }: DialogEstoqueProps) {
+export default function DialogEstoque({ aberto, onAbertoChange, produto, onEstoqueAtualizado }: DialogEstoqueProps) {
     const [estoqueData, setEstoqueData] = useState<EstoqueData>({})
     const [salvandoEstoque, setSalvandoEstoque] = useState(false)
 
@@ -90,17 +91,21 @@ export default function DialogEstoque({ aberto, onAbertoChange, produto }: Dialo
 
             if (response.ok) {
                 console.log('Estoque salvo com sucesso!')
+
+                // Chamar callback para atualizar o produto no componente pai
+                if (onEstoqueAtualizado) {
+                    onEstoqueAtualizado(produto.id, estoqueData)
+                }
+
                 onAbertoChange(false)
-                // Aqui você pode adicionar uma notificação de sucesso
                 showToast('Estoque atualizado!', ToastType.SUCCESS);
             } else {
                 console.error('Erro ao salvar estoque')
-                // Aqui você pode adicionar uma notificação de erro
-                // toast.error('Erro ao salvar estoque')
+                showToast('Erro ao salvar estoque', ToastType.ERROR);
             }
         } catch (error) {
             console.error('Erro ao salvar estoque:', error)
-            // toast.error('Erro ao conectar com o servidor')
+            showToast('Erro ao conectar com o servidor', ToastType.ERROR);
         } finally {
             setSalvandoEstoque(false)
         }
@@ -162,7 +167,7 @@ export default function DialogEstoque({ aberto, onAbertoChange, produto }: Dialo
 
     return (
         <Dialog open={aberto} onOpenChange={onAbertoChange}>
-            <DialogContent className="bg-gray-800 border border-gray-700 text-white max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogContent className="bg-gray-800 border border-gray-700 text-white  max-h-[80vh]  overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="text-cyan-400 text-xl flex items-center gap-2">
                         <Archive className="w-5 h-5" />
@@ -179,8 +184,9 @@ export default function DialogEstoque({ aberto, onAbertoChange, produto }: Dialo
                             {produto.sabores.map((sabor) => (
                                 <div key={sabor.id} className="flex items-center justify-between p-4 bg-gray-900 rounded-lg border border-gray-600">
                                     <div className="flex-1">
-                                        <h4 className="font-medium text-gray-100">{sabor.nome}</h4>
-
+                                        <h4 className="font-medium text-gray-100">
+                                            {sabor.nome.length > 10 ? `${sabor.nome.slice(0, 10)}...` : sabor.nome}
+                                        </h4>
                                     </div>
 
                                     <div className="flex items-center gap-3">

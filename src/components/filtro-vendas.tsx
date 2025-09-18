@@ -18,20 +18,20 @@ interface FiltrosVendasProps {
 
 const DateRangePicker = ({ filtros, setFiltros }: any) => {
     return (
-        <div className="flex gap-2">
+        <div className="flex lg:gap-2 gap-1">
             <input
                 type="date"
                 value={filtros.dataInicio || ''}
                 onChange={(e) => setFiltros((prev: any) => ({ ...prev, dataInicio: e.target.value }))}
                 placeholder="Data início"
-                className="bg-slate-700 border border-slate-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
+                className="bg-slate-700 border border-slate-600 rounded-md px-2 md:px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
             />
             <input
                 type="date"
                 value={filtros.dataFim || ''}
                 onChange={(e) => setFiltros((prev: any) => ({ ...prev, dataFim: e.target.value }))}
                 placeholder="Data fim"
-                className="bg-slate-700 border border-slate-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
+                className="bg-slate-700 border border-slate-600 rounded-md px-2 md:px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
             />
         </div>
     );
@@ -65,21 +65,23 @@ export default function FiltrosVendas({ filtros, setFiltros, recebedoresUnicos }
     };
 
     // Função para formatar data
-    const formatarData = (dataString: string) => {
+    const formatarData = (dataString: any) => {
         if (!dataString) return 'Data não informada';
 
         try {
-            const date = new Date(dataString);
-            return date.toLocaleDateString('pt-BR', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-            });
+            // Extrai a data no formato YYYY-MM-DD da string
+            const dataMatch = dataString.toString().match(/(\d{4}-\d{2}-\d{2})/);
+
+            if (dataMatch) {
+                const [year, month, day] = dataMatch[1].split('-');
+                return `${day}/${month}/${year}`;
+            }
+
+            return 'Data inválida';
         } catch (error) {
-            return dataString;
+            return 'Data inválida';
         }
     };
-
     return (
         <div className="bg-slate-800 rounded-lg p-6 mb-6 border border-slate-700">
             <div className="flex items-center justify-between mb-6">

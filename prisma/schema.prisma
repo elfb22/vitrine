@@ -49,9 +49,9 @@ model sabor {
   produto_id Int
   estoque    Int     @default(0) // Quantidade em estoque
   produto    produto @relation(fields: [produto_id], references: [id])
-
+  status     status? @default(ATIVO)
   // Relacionamento com vendas
-  vendas venda[]
+  vendas     venda[]
 }
 
 // Tabela simplificada de vendas

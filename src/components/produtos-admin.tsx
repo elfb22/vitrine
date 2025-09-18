@@ -483,7 +483,7 @@ const ProdutosAdmin: React.FC = () => {
                                         {produto.sabores && produto.sabores.length > 0 && (
                                             <div className="mb-3">
                                                 <div className="flex flex-wrap gap-1">
-                                                    {produto.sabores.slice(0, 3).map((sabor, index) => (
+                                                    {produto.sabores.map((sabor, index) => (
                                                         <span
                                                             key={index}
                                                             className="px-2 py-1 bg-gray-800 text-gray-300 text-xs rounded-full border border-gray-700"

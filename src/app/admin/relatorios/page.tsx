@@ -2,10 +2,11 @@
 
 'use client'
 import React, { useEffect, useState, useMemo } from 'react';
-import { DollarSign, Package, Truck } from 'lucide-react';
+import { ArrowLeft, DollarSign, Package, Truck } from 'lucide-react';
 import FiltrosVendas from '@/components/filtro-vendas';
 import TabelaVendas from '@/components/produtos-vendas';
 import { showToast, ToastType } from '@/utils/toastUtils';
+import { useRouter } from 'next/navigation';
 
 
 interface FiltrosState {
@@ -206,7 +207,7 @@ export default function Relatorios() {
 
         }
     };
-
+    const router = useRouter()
     return (
         <div className="min-h-screen bg-slate-900 text-white p-6">
             {/* Header */}
@@ -215,7 +216,14 @@ export default function Relatorios() {
                     Relatórios de <span className="text-cyan-400">Vendas</span>
                 </h1>
                 <p className="text-slate-400">Acompanhe o desempenho das suas vendas e analise os dados</p>
+                <div className='flex justify-center mt-2'>
+                    <button onClick={() => router.push('/admin/vendas')} className="bg-cyan-700 gap-2 flex-row items-center flex text-white shadow-lg shadow-cyan-900/30 px-4 py-2 rounded-lg hover:cursor-pointer hover:bg-cyan-600">
+                        <ArrowLeft color='white' size={20} />
+                        Voltar
+                    </button>
+                </div>
             </div>
+
 
             {/* Error Message */}
             {error && (

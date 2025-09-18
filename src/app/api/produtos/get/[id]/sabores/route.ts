@@ -9,7 +9,8 @@ export async function GET(request: NextRequest, { params }: any) {
     try {
         const sabores = await prisma.produto.findMany({
             where: {
-                id: parseInt(id)
+                id: parseInt(id),
+                status: 'ATIVO'
             },
             select: {
                 sabores: true

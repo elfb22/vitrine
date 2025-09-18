@@ -35,6 +35,10 @@ interface Categoria {
     nome: string
 }
 
+interface EstoqueData {
+    [saborId: number]: number
+}
+
 export default function Vendas() {
     const [produtos, setProdutos] = useState<Produto[]>([])
     const [categorias, setCategorias] = useState<Categoria[]>([])
@@ -105,6 +109,41 @@ export default function Vendas() {
         } catch (error) {
             console.error('Erro ao buscar produtos:', error)
         }
+    }
+
+    // Nova função para atualizar estoque após salvar no dialog
+    const atualizarEstoqueLocal = (produtoId: number, novoEstoque: EstoqueData) => {
+        setProdutos(produtosAtuais =>
+            produtosAtuais.map(produto => {
+                if (produto.id === produtoId) {
+                    return {
+                        ...produto,
+                        sabores: produto.sabores.map(sabor => ({
+                            ...sabor,
+                            estoque: novoEstoque[sabor.id] || 0
+                        }))
+                    }
+                }
+                return produto
+            })
+        )
+
+        // Também atualizar o produto selecionado se for o mesmo
+        if (produtoSelecionado && produtoSelecionado.id === produtoId) {
+            setProdutoSelecionado(produtoAtual => {
+                if (!produtoAtual) return null
+
+                return {
+                    ...produtoAtual,
+                    sabores: produtoAtual.sabores.map(sabor => ({
+                        ...sabor,
+                        estoque: novoEstoque[sabor.id] || 0
+                    }))
+                }
+            })
+        }
+
+        console.log('Estoque local atualizado para produto:', produtoId, novoEstoque)
     }
 
     // Função para atualizar estoque após venda
@@ -269,13 +308,13 @@ export default function Vendas() {
     return (
         <>
             {loading && <Loading />}
-            <div className="md:px-8 pt-5">
+            <div className="md:px-8 px-3 pt-5">
                 <div className="mb-5">
 
                     <div className="flex flex-col  sm:items-center sm:justify-center items-center gap-4">
                         <div>
-                            <div className='flex items-center gap-4'>
-                                <h2 className="md:text-3xl text-2xl font-bold text-cyan-400 mb-2">Vendas</h2>
+                            <div className='flex items-center justify-center gap-4'>
+                                <h2 className="md:text-3xl text-2xl text-center font-bold text-cyan-400 mb-2">Vendas</h2>
                                 <div className="bg-gray-800 px-4 py-1 rounded-full shadow-sm border border-gray-700">
                                     <span className="md:text-sm text-xs font-medium text-gray-300">{produtos.length} produtos</span>
                                 </div>
@@ -379,7 +418,7 @@ export default function Vendas() {
                                         {produto.sabores && produto.sabores.length > 0 && (
                                             <div className="mb-3">
                                                 <div className="flex flex-wrap gap-1">
-                                                    {produto.sabores.slice(0, 3).map((sabor, index) => (
+                                                    {produto.sabores.map((sabor, index) => (
                                                         <div key={index} className='gap-2'>
                                                             <span
                                                                 key={index}
@@ -426,6 +465,7 @@ export default function Vendas() {
                     aberto={dialogEstoqueAberto}
                     onAbertoChange={setDialogEstoqueAberto}
                     produto={produtoSelecionado}
+                    onEstoqueAtualizado={atualizarEstoqueLocal}
                 />
 
                 <DialogVendas

@@ -16,14 +16,14 @@ export async function PUT(
         const formData = await request.formData()
 
         const nome = formData.get('nome') as string
-        const categoriaNome = formData.get('categoria') as string // Nome da categoria
+        const categoriaNome = formData.get('categoria') as string
         const precoOriginal = parseFloat(formData.get('precoOriginal') as string)
         const precoDesconto = formData.get('precoDesconto') as string
         const descricao = formData.get('descricao') as string
         const saboresString = formData.get('sabores') as string
         const imagem = formData.get('imagem') as File | null
         const imagemAtual = formData.get('imagemAtual') as string | null
-        const status = formData.get('status') as string // Adicionar status
+        const status = formData.get('status') as string
 
         // Validações básicas
         if (!nome || !categoriaNome || !precoOriginal || !descricao) {
@@ -53,9 +53,12 @@ export async function PUT(
             )
         }
 
-        // Buscar o produto atual para obter a imagem existente
+        // Buscar o produto atual para obter a imagem existente e sabores
         const produtoAtual = await prisma.produto.findUnique({
-            where: { id: parseInt(id) }
+            where: { id: parseInt(id) },
+            include: {
+                sabores: true
+            }
         })
 
         if (!produtoAtual) {
@@ -66,12 +69,12 @@ export async function PUT(
         }
 
         // Processar sabores
-        let sabores = []
+        let saboresNovos: string[] = []
         try {
-            sabores = saboresString ? JSON.parse(saboresString) : []
+            saboresNovos = saboresString ? JSON.parse(saboresString) : []
         } catch (error) {
             console.error('Erro ao parsear sabores:', error)
-            sabores = []
+            saboresNovos = []
         }
 
         // Função para remover imagem antiga do Supabase
@@ -94,7 +97,7 @@ export async function PUT(
         }
 
         // Processar imagem
-        let nomeImagem = imagemAtual // Manter imagem atual por padrão
+        let nomeImagem = imagemAtual
 
         if (imagem && imagem.size > 0) {
             try {
@@ -144,16 +147,57 @@ export async function PUT(
             }
         }
 
-        // Primeiro, deletar sabores existentes
-        await prisma.sabor.deleteMany({
-            where: { produto_id: parseInt(id) }
-        })
+        // NOVA LÓGICA PARA GERENCIAR SABORES CORRETAMENTE
+        const saboresAtuais = produtoAtual.sabores.map(sabor => sabor.nome)
+
+        // Sabores para adicionar (estão nos novos mas não nos atuais)
+        const saboresParaAdicionar = saboresNovos.filter(sabor => !saboresAtuais.includes(sabor))
+
+        // Sabores para remover (estão nos atuais mas não nos novos)
+        const saboresParaRemover = saboresAtuais.filter(sabor => !saboresNovos.includes(sabor))
+
+        // Verificar se sabores a serem removidos têm vendas associadas
+        if (saboresParaRemover.length > 0) {
+            const saboresComVendas = await prisma.sabor.findMany({
+                where: {
+                    produto_id: parseInt(id),
+                    nome: { in: saboresParaRemover },
+                    vendas: { some: {} }
+                },
+                include: {
+                    vendas: true
+                }
+            })
+
+            if (saboresComVendas.length > 0) {
+                // Se há vendas, apenas desativar os sabores ao invés de deletar
+                await prisma.sabor.updateMany({
+                    where: {
+                        produto_id: parseInt(id),
+                        nome: { in: saboresParaRemover }
+                    },
+                    data: {
+                        status: 'DESATIVADO'
+                    }
+                })
+                console.log('Sabores com vendas foram desativados:', saboresParaRemover)
+            } else {
+                // Se não há vendas, pode deletar
+                await prisma.sabor.deleteMany({
+                    where: {
+                        produto_id: parseInt(id),
+                        nome: { in: saboresParaRemover }
+                    }
+                })
+                console.log('Sabores sem vendas foram deletados:', saboresParaRemover)
+            }
+        }
 
         // Preparar dados para atualização
         const dadosAtualizacao: any = {
             nome,
             categoria: {
-                connect: { id: categoria.id } // Conectar usando o ID da categoria
+                connect: { id: categoria.id }
             },
             preco_original: precoOriginal,
             descricao,
@@ -176,11 +220,12 @@ export async function PUT(
             dadosAtualizacao.imagem = nomeImagem
         }
 
-        // Adicionar sabores se houver
-        if (sabores.length > 0) {
+        // Adicionar apenas os sabores novos
+        if (saboresParaAdicionar.length > 0) {
             dadosAtualizacao.sabores = {
-                create: sabores.map((saborNome: string) => ({
-                    nome: saborNome
+                create: saboresParaAdicionar.map((saborNome: string) => ({
+                    nome: saborNome,
+                    status: 'ATIVO'
                 }))
             }
         }
@@ -191,9 +236,16 @@ export async function PUT(
             data: dadosAtualizacao,
             include: {
                 categoria: true,
-                sabores: true
+                sabores: {
+                    where: {
+                        status: 'ATIVO' // Só retornar sabores ativos
+                    }
+                }
             }
         })
+
+        console.log('Sabores adicionados:', saboresParaAdicionar)
+        console.log('Sabores removidos:', saboresParaRemover)
 
         return NextResponse.json({
             message: 'Produto atualizado com sucesso',
