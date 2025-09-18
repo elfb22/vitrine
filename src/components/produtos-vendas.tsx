@@ -70,14 +70,17 @@ export default function TabelaVendas({
         if (!dataString) return 'Data não informada';
 
         try {
-            const date = new Date(dataString);
-            return date.toLocaleDateString('pt-BR', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-            });
+            // Extrai a data no formato YYYY-MM-DD da string
+            const dataMatch = dataString.toString().match(/(\d{4}-\d{2}-\d{2})/);
+
+            if (dataMatch) {
+                const [year, month, day] = dataMatch[1].split('-');
+                return `${day}/${month}/${year}`;
+            }
+
+            return 'Data inválida';
         } catch (error) {
-            return dataString;
+            return 'Data inválida';
         }
     };
 
