@@ -271,10 +271,10 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
     }, [aberto, reset])
 
     return (
-        <Dialog open={aberto} onOpenChange={onAbertoChange} >
-            <DialogContent className="bg-gray-800 border border-gray-700 text-white  max-h-[90vh]" style={{ overflow: 'hidden' }}>
-                <div className="overflow-y-auto max-h-[80vh] pr-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#374151 transparent' }}>
-                    <DialogHeader>
+        <Dialog open={aberto} onOpenChange={onAbertoChange}>
+            <DialogContent className="bg-gray-800 border border-gray-700 text-white w-[95vw] lg:w-[85vw] xl:w-[75vw] max-w-4xl max-h-[90vh] p-0 overflow-hidden">
+                <div className="overflow-y-auto max-h-[calc(90vh-2rem)] p-4">
+                    <DialogHeader className="pb-4">
                         <DialogTitle className="text-cyan-400 text-xl flex items-center gap-2">
                             <ShoppingCart className="w-5 h-5" />
                             Registrar Venda
@@ -285,7 +285,7 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                     </DialogHeader>
 
                     {produto && (
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6">
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                             {/* Produto Info */}
                             <div className="p-3 bg-gray-900 rounded-lg border border-gray-600">
                                 <div className="flex items-center gap-2 mb-1">
@@ -298,15 +298,16 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                                 </p>
                             </div>
 
-                            {/* Sabor e Quantidade na mesma linha */}
-                            <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                    <Label className="text-gray-300">Sabor *</Label>
+                            {/* Sabor e Quantidade - responsivo */}
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                                {/* Sabor */}
+                                <div className="w-full">
+                                    <Label className="text-gray-300 text-sm">Sabor *</Label>
                                     <select
                                         {...register('sabor_id', {
                                             setValueAs: (value) => parseInt(value)
                                         })}
-                                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 mt-2"
+                                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 mt-1 text-sm box-border"
                                     >
                                         <option value={0}>Selecione</option>
                                         {produto.sabores.map((sabor) => (
@@ -320,16 +321,17 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                                     )}
                                 </div>
 
-                                <div>
-                                    <Label className="text-gray-300">Quantidade *</Label>
+                                {/* Quantidade */}
+                                <div className="w-full">
+                                    <Label className="text-gray-300 text-sm">Quantidade *</Label>
                                     <Input
                                         type="number"
-                                        autoComplete='off'
+                                        autoComplete="off"
                                         min="1"
                                         {...register('quantidade', {
                                             setValueAs: (value) => parseInt(value) || 1
                                         })}
-                                        className="bg-gray-700 border-gray-600 text-white focus:border-cyan-500 mt-2"
+                                        className="w-full bg-gray-700 border-gray-600 text-white focus:border-cyan-500 mt-1 text-sm box-border"
                                     />
                                     {errors.quantidade && (
                                         <p className="text-red-400 text-xs mt-1">{errors.quantidade.message}</p>
@@ -338,8 +340,8 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                             </div>
 
                             {/* Nome do Cliente */}
-                            <div>
-                                <Label className="text-gray-300 flex items-center gap-2">
+                            <div className="w-full">
+                                <Label className="text-gray-300 flex items-center gap-2 text-sm">
                                     <User className="w-4 h-4" />
                                     Nome do Cliente *
                                 </Label>
@@ -347,7 +349,7 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                                     type="text"
                                     {...register('nome_cliente')}
                                     placeholder="Digite o nome do cliente"
-                                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-cyan-500 mt-2"
+                                    className="w-full bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-cyan-500 mt-1 text-sm box-border"
                                 />
                                 {errors.nome_cliente && (
                                     <p className="text-red-400 text-xs mt-1">{errors.nome_cliente.message}</p>
@@ -355,11 +357,11 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                             </div>
 
                             {/* Quem Recebeu - Select com usuários */}
-                            <div>
-                                <Label className="text-gray-300">Quem Recebeu *</Label>
+                            <div className="w-full">
+                                <Label className="text-gray-300 text-sm">Quem Recebeu *</Label>
                                 <select
                                     {...register('nome_recebedor')}
-                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 mt-2"
+                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 mt-1 text-sm box-border"
                                 >
                                     <option value="">Selecione quem recebeu</option>
                                     {user.map((usuario: any) => (
@@ -374,15 +376,16 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                             </div>
 
                             {/* Data */}
-                            <div>
-                                <Label className="text-gray-300 flex items-center gap-2">
+                            <div className="w-full">
+                                <Label className="text-gray-300 flex items-center gap-2 text-sm">
                                     <Calendar className="w-4 h-4" />
                                     Data da Venda *
                                 </Label>
                                 <Input
                                     type="date"
                                     {...register('data')}
-                                    className="bg-gray-700 border-gray-600 text-white focus:border-cyan-500 mt-2"
+                                    className="w-full bg-gray-700 border-gray-600 text-white focus:border-cyan-500 mt-1 text-sm box-border"
+                                    style={{ WebkitAppearance: 'none' }}
                                 />
                                 {errors.data && (
                                     <p className="text-red-400 text-xs mt-1">{errors.data.message}</p>
@@ -390,14 +393,14 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                             </div>
 
                             {/* Forma de Pagamento */}
-                            <div>
-                                <Label className="text-gray-300 flex items-center gap-2">
+                            <div className="w-full">
+                                <Label className="text-gray-300 flex items-center gap-2 text-sm">
                                     <CreditCard className="w-4 h-4" />
                                     Forma de Pagamento *
                                 </Label>
                                 <select
                                     {...register('forma_pagamento')}
-                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 mt-2"
+                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 mt-1 text-sm box-border"
                                 >
                                     <option value="">Selecione a forma de pagamento</option>
                                     <option value="PIX">PIX</option>
@@ -412,13 +415,13 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                             </div>
 
                             {/* Valor Total */}
-                            <div>
-                                <Label className="text-gray-300 flex items-center gap-2">
+                            <div className="w-full">
+                                <Label className="text-gray-300 flex items-center gap-2 text-sm">
                                     <DollarSign className="w-4 h-4" />
                                     Valor Total da Venda *
                                 </Label>
-                                <div className="relative mt-2">
-                                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-400 font-medium">
+                                <div className="relative mt-1 w-full">
+                                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-400 font-medium text-sm">
                                         R$
                                     </span>
                                     <Input
@@ -427,7 +430,7 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                                         onChange={handleValorChange}
                                         onKeyDown={handleValorKeyDown}
                                         placeholder="0,00"
-                                        className="pl-10 bg-cyan-900/20 border-cyan-800 text-cyan-400 placeholder-cyan-600 focus:border-cyan-500 font-medium text-lg"
+                                        className="w-full pl-10 bg-cyan-900/20 border-cyan-800 text-cyan-400 placeholder-cyan-600 focus:border-cyan-500 font-medium text-base box-border"
                                     />
                                 </div>
                                 {errors.valor_total && (
@@ -438,17 +441,17 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                                 </p>
                             </div>
 
-                            {/* Checkboxes Delivery e Fiado */}
-                            <div className='flex flex-row gap-3 '>
+                            {/* Checkboxes Delivery e Fiado - responsivo */}
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                                 <div className="flex items-center gap-3 p-3 bg-gray-900 rounded-lg border border-gray-600">
                                     <Checkbox
                                         id="delivery"
                                         checked={delivery}
                                         onCheckedChange={(checked) => setValue('delivery', !!checked)}
-                                        className="border-gray-600 data-[state=checked]:bg-cyan-600"
+                                        className="border-gray-600 data-[state=checked]:bg-cyan-600 flex-shrink-0"
                                     />
                                     <Label htmlFor="delivery" className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
-                                        <Truck className="w-4 h-4 text-orange-400" />
+                                        <Truck className="w-4 h-4 text-orange-400 flex-shrink-0" />
                                         Entrega
                                     </Label>
                                 </div>
@@ -457,38 +460,38 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                                         id="fiado"
                                         checked={fiado}
                                         onCheckedChange={(checked) => setValue('fiado', !!checked)}
-                                        className="border-gray-600 data-[state=checked]:bg-cyan-600"
+                                        className="border-gray-600 data-[state=checked]:bg-cyan-600 flex-shrink-0"
                                     />
                                     <Label htmlFor="fiado" className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
-                                        <CircleX className="w-4 h-4 text-red-400" />
+                                        <CircleX className="w-4 h-4 text-red-400 flex-shrink-0" />
                                         Fiado
                                     </Label>
                                 </div>
                             </div>
 
-                            {/* Botões */}
-                            <div className="flex gap-3 pt-4 border-t border-gray-700">
+                            {/* Botões - responsivo */}
+                            <div className="flex flex-col lg:flex-row gap-3 pt-4 border-t border-gray-700">
                                 <Button
                                     type="button"
                                     variant="secondary"
                                     onClick={() => onAbertoChange(false)}
-                                    className="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-400"
+                                    className="w-full lg:flex-1 bg-gray-700 hover:bg-gray-600 text-gray-400 text-sm py-2"
                                 >
                                     Cancelar
                                 </Button>
                                 <Button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="flex-1 bg-green-600 hover:cursor-pointer hover:bg-green-700 disabled:opacity-50"
+                                    className="w-full lg:flex-1 bg-green-600 hover:cursor-pointer hover:bg-green-700 disabled:opacity-50 text-sm py-2"
                                 >
                                     {isSubmitting ? (
                                         <>
-                                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2 flex-shrink-0"></div>
                                             Processando...
                                         </>
                                     ) : (
                                         <>
-                                            <ShoppingCart className="w-4 h-4 mr-2" />
+                                            <ShoppingCart className="w-4 h-4 mr-2 flex-shrink-0" />
                                             Confirmar Venda
                                         </>
                                     )}
