@@ -272,7 +272,7 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
 
     return (
         <Dialog open={aberto} onOpenChange={onAbertoChange}>
-            <DialogContent className="bg-gray-800 border border-gray-700 text-white w-[95vw] lg:w-[85vw] xl:w-[75vw] max-w-4xl max-h-[90vh] p-0 overflow-hidden">
+            <DialogContent className="bg-gray-800 border border-gray-700 text-white w-[95vw]  xl:w-[85vw] max-w-4xl max-h-[90vh] p-0 overflow-hidden">
                 <div className="overflow-y-auto max-h-[calc(90vh-2rem)] p-4">
                     <DialogHeader className="pb-4">
                         <DialogTitle className="text-cyan-400 text-xl flex items-center gap-2">
@@ -442,7 +442,7 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                             </div>
 
                             {/* Checkboxes Delivery e Fiado - responsivo */}
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-3 ">
                                 <div className="flex items-center gap-3 p-3 bg-gray-900 rounded-lg border border-gray-600">
                                     <Checkbox
                                         id="delivery"
@@ -470,7 +470,7 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                             </div>
 
                             {/* Botões - responsivo */}
-                            <div className="flex flex-col lg:flex-row gap-3 pt-4 border-t border-gray-700">
+                            <div className="flex flex-col lg:flex-row gap-3 pt-4 mb-3 border-t border-gray-700">
                                 <Button
                                     type="button"
                                     variant="secondary"
