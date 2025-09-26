@@ -21,7 +21,7 @@ interface Produto {
     imagem: string
     categoria_id: number
     created_at: string
-    status: string // Campo adicionado para o status
+    status: string
 }
 
 interface Categoria {
@@ -41,7 +41,7 @@ export default function Produtos() {
             const response = await fetch('/api/produtos/get')
             const data: Produto[] = await response.json()
 
-            // Filtrar apenas produtos com status ATIVO e ordenar por data de criação decrescente
+
             const produtosAtivos = data
                 .filter(produto => produto.status === 'ATIVO')
                 .sort((a, b) => {
