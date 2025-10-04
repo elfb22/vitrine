@@ -142,7 +142,7 @@ export default function Home() {
                         {/* Botões de contato */}
                         <div className="flex justify-center gap-4 mb-6">
                             <a
-                                href="https://wa.me/5532 99392474?text=Olá!%20Gostaria%20de%20fazer%20um%20pedido"
+                                href="https://wa.me/5532999392474?text=Olá!%20Gostaria%20de%20fazer%20um%20pedido"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors duration-300"
