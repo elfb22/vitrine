@@ -376,12 +376,12 @@ const ProdutosAdmin: React.FC = () => {
 
                 {/* Filtro de Categorias */}
                 <div className="mb-8 overflow-x-auto pb-2">
-                    <div className="flex ">
+                    <div className="flex gap-2">
                         <button
                             onClick={() => setCategoriaAtiva("todas")}
-                            className={`px-6 py-1 cursor-pointer rounded-full transition-all duration-300 ${categoriaAtiva === "todas"
-                                ? "bg-cyan-700 text-white shadow-lg shadow-cyan-900/30"
-                                : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                            className={`px-6 py-1 cursor-pointer rounded-full transition-all duration-300 whitespace-nowrap ${categoriaAtiva === "todas"
+                                    ? "bg-cyan-700 text-white shadow-lg shadow-cyan-900/30"
+                                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                                 }`}
                         >
                             Todas
@@ -391,10 +391,9 @@ const ProdutosAdmin: React.FC = () => {
                             <button
                                 key={categoria.id}
                                 onClick={() => setCategoriaAtiva(categoria.id)}
-
-                                className={`px-6 py-1 mx-1 cursor-pointer rounded-full transition-all duration-300 ${categoriaAtiva === categoria.id
-                                    ? "bg-cyan-700 text-white shadow-lg shadow-cyan-900/30"
-                                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                                className={`px-6 py-1 cursor-pointer rounded-full transition-all duration-300 whitespace-nowrap ${categoriaAtiva === categoria.id
+                                        ? "bg-cyan-700 text-white shadow-lg shadow-cyan-900/30"
+                                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                                     }`}
                             >
                                 {categoria.nome}

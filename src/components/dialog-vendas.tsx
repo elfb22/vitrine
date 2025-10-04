@@ -307,7 +307,7 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                                         {...register('sabor_id', {
                                             setValueAs: (value) => parseInt(value)
                                         })}
-                                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 mt-1 text-sm box-border"
+                                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 mt-1 text-base box-border"
                                     >
                                         <option value={0}>Selecione</option>
                                         {produto.sabores.map((sabor) => (
@@ -331,7 +331,7 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                                         {...register('quantidade', {
                                             setValueAs: (value) => parseInt(value) || 1
                                         })}
-                                        className="w-full bg-gray-700 border-gray-600 text-white focus:border-cyan-500 mt-1 text-sm box-border"
+                                        className="w-full bg-gray-700 border-gray-600 text-white focus:border-cyan-500 mt-1 text-base box-border"
                                     />
                                     {errors.quantidade && (
                                         <p className="text-red-400 text-xs mt-1">{errors.quantidade.message}</p>
@@ -349,7 +349,7 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                                     type="text"
                                     {...register('nome_cliente')}
                                     placeholder="Digite o nome do cliente"
-                                    className="w-full bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-cyan-500 mt-1 text-sm box-border"
+                                    className="w-full bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-cyan-500 mt-1 text-base box-border"
                                 />
                                 {errors.nome_cliente && (
                                     <p className="text-red-400 text-xs mt-1">{errors.nome_cliente.message}</p>
@@ -361,7 +361,7 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                                 <Label className="text-gray-300 text-sm">Quem Recebeu *</Label>
                                 <select
                                     {...register('nome_recebedor')}
-                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 mt-1 text-sm box-border"
+                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 mt-1 text-base box-border"
                                 >
                                     <option value="">Selecione quem recebeu</option>
                                     {user.map((usuario: any) => (
@@ -384,7 +384,7 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                                 <Input
                                     type="date"
                                     {...register('data')}
-                                    className="w-full bg-gray-700 border-gray-600 text-white focus:border-cyan-500 mt-1 text-sm box-border"
+                                    className="w-full bg-gray-700 border-gray-600 text-white focus:border-cyan-500 mt-1 text-base box-border"
                                     style={{ WebkitAppearance: 'none' }}
                                 />
                                 {errors.data && (
@@ -400,7 +400,7 @@ export default function DialogVendas({ aberto, user, onAbertoChange, produto, on
                                 </Label>
                                 <select
                                     {...register('forma_pagamento')}
-                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 mt-1 text-sm box-border"
+                                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 mt-1 text-base box-border"
                                 >
                                     <option value="">Selecione a forma de pagamento</option>
                                     <option value="PIX">PIX</option>

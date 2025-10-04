@@ -328,23 +328,19 @@ export default function Vendas() {
 
                                 Voltar
                             </button>
-                            <button onClick={() => router.push('/admin/relatorios')} className="bg-cyan-700 gap-2 flex flex-row items-center text-white shadow-lg shadow-cyan-900/30 px-4 py-2 rounded-lg hover:cursor-pointer hover:bg-cyan-600">
-                                <FileText color='white' size={20} />
 
-                                Relatórios
-                            </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Filtro de Categorias */}
-                <div className="mb-8 overflow-x-auto pb-2">
-                    <div className="flex items-center justify-center">
+                <div className="mb-8 overflow-x-auto pb-2 px-4">
+                    <div className="flex items-center gap-2 min-w-max">
                         <button
                             onClick={() => setCategoriaAtiva("todas")}
-                            className={`px-6 py-1 cursor-pointer rounded-full transition-all duration-300 ${categoriaAtiva === "todas"
-                                ? "bg-cyan-700 text-white shadow-lg shadow-cyan-900/30"
-                                : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                            className={`px-6 py-2 cursor-pointer rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 ${categoriaAtiva === "todas"
+                                    ? "bg-cyan-700 text-white shadow-lg shadow-cyan-900/30"
+                                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                                 }`}
                         >
                             Todas
@@ -354,9 +350,9 @@ export default function Vendas() {
                             <button
                                 key={categoria.id}
                                 onClick={() => setCategoriaAtiva(categoria.id)}
-                                className={`px-6 py-1 mx-1 cursor-pointer rounded-full transition-all duration-300 ${categoriaAtiva === categoria.id
-                                    ? "bg-cyan-700 text-white shadow-lg shadow-cyan-900/30"
-                                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                                className={`px-6 py-2 cursor-pointer rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 ${categoriaAtiva === categoria.id
+                                        ? "bg-cyan-700 text-white shadow-lg shadow-cyan-900/30"
+                                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                                     }`}
                             >
                                 {categoria.nome}
@@ -364,7 +360,6 @@ export default function Vendas() {
                         ))}
                     </div>
                 </div>
-
                 {/* Verificação se há produtos filtrados */}
                 {produtosFiltrados.length === 0 && categoriaAtiva !== "todas" ? (
                     <div className="md:p-16 text-center">

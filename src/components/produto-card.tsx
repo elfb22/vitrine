@@ -130,8 +130,8 @@ Obrigado por escolher a ElfBPods.`
                         {product.name}
                     </h3>
 
-                    {/* Descrição com altura flexível */}
-                    <div className="flex-grow mb-4">
+                    {/* Descrição sem flex-grow */}
+                    <div className="mb-4">
                         {product.description && (
                             <div className="text-gray-400 text-sm leading-relaxed">
                                 {shouldTruncateDescription && !isDescriptionExpanded ? (
@@ -197,6 +197,9 @@ Obrigado por escolher a ElfBPods.`
                             )}
                         </div>
                     </div>
+
+                    {/* Div vazio que vai crescer e empurrar o botão para baixo */}
+                    <div className="flex-grow"></div>
 
                     {/* Botão sempre no final do card */}
                     <div className="mt-auto">

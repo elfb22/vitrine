@@ -2,7 +2,7 @@
 'use client'
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Plus, Tag, LogOut, Settings, User, Bell, X, Hash, Sparkles, CircleDollarSign } from "lucide-react"
+import { Plus, Tag, LogOut, Settings, User, Bell, X, Hash, Sparkles, CircleDollarSign, FileText } from "lucide-react"
 import Image from "next/image"
 import CategoryDialog from "@/components/add-categoria-form"
 import AddProductDialog from "@/components/add-produto-form"
@@ -135,6 +135,11 @@ export default function AdminDashboard() {
                             >
                                 <CircleDollarSign size={22} />
                                 Vendas
+                            </button>
+                            <button onClick={() => router.push('/admin/relatorios')} className="flex items-center cursor-pointer gap-3 px-8 py-4 bg-gradient-to-r from-cyan-700 to-cyan-600 hover:from-cyan-600 hover:to-cyan-500 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-cyan-900/30 transform hover:-translate-y-1">
+                                <FileText color='white' size={20} />
+
+                                Relatórios
                             </button>
                         </div>
                     </div>

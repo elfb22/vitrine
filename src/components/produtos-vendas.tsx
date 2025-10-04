@@ -13,7 +13,7 @@ interface TabelaVendasProps {
     onLimparFiltros: () => void;
     onEditarVenda: (venda: any) => void;
     onExcluirVenda: (id: string) => void;
-    onVendaAtualizada?: (vendaAtualizada: any) => void; // Nova prop para callback de atualização
+    onVendaAtualizada?: (vendaAtualizada: any) => void;
 }
 
 export default function TabelaVendas({
@@ -28,12 +28,13 @@ export default function TabelaVendas({
 }: TabelaVendasProps) {
     // Estados para paginação
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 10;
     const [user, setUser] = useState([]);
 
     // Estados para o dialog de edição
     const [vendaParaEditar, setVendaParaEditar] = useState<any | null>(null);
     const [dialogEdicaoAberto, setDialogEdicaoAberto] = useState(false);
+
     const fetchUser = async () => {
         try {
             const response = await fetch('/api/user', {
@@ -54,6 +55,7 @@ export default function TabelaVendas({
     useEffect(() => {
         fetchUser()
     }, [])
+
     // Calcular paginação
     const totalPages = Math.ceil(vendas.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -93,6 +95,43 @@ export default function TabelaVendas({
 
     const nextPage = () => goToPage(currentPage + 1);
     const prevPage = () => goToPage(currentPage - 1);
+
+    // Função para gerar os números das páginas a serem exibidos
+    const getPageNumbers = () => {
+        const pages: (number | string)[] = [];
+        const maxVisible = 5; // Máximo de páginas visíveis ao mesmo tempo
+
+        if (totalPages <= maxVisible + 2) {
+            // Se houver poucas páginas, mostra todas
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
+            }
+        } else {
+            // Sempre mostra a primeira página
+            pages.push(1);
+
+            if (currentPage > 3) {
+                pages.push('...');
+            }
+
+            // Calcula o range de páginas ao redor da página atual
+            const start = Math.max(2, currentPage - 1);
+            const end = Math.min(totalPages - 1, currentPage + 1);
+
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+
+            if (currentPage < totalPages - 2) {
+                pages.push('...');
+            }
+
+            // Sempre mostra a última página
+            pages.push(totalPages);
+        }
+
+        return pages;
+    };
 
     // Função para confirmar exclusão
     const confirmarExclusao = (venda: any) => {
@@ -182,62 +221,69 @@ export default function TabelaVendas({
                 {!loading && currentVendas && currentVendas.length > 0 && (
                     <>
                         <div className="overflow-x-auto">
-                            <table className="w-full">
+                            <table className="w-full table-fixed min-w-[1200px]">
                                 <thead>
                                     <tr className="border-b border-slate-700">
-                                        <th className="text-left p-4 text-slate-300 font-medium">Data</th>
-                                        <th className="text-left p-4 text-slate-300 font-medium">Produto</th>
-                                        <th className="text-left p-4 text-slate-300 font-medium">Sabor</th>
-                                        <th className="text-left p-4 text-slate-300 font-medium">Cliente</th>
-                                        <th className="text-left p-4 text-slate-300 font-medium">Quem Recebeu</th>
-                                        <th className="text-left p-4 text-slate-300 font-medium">Taxa de Entrega</th>
-                                        <th className="text-left p-4 text-slate-300 font-medium">Fiado</th>
-                                        <th className="text-left p-4 text-slate-300 font-medium">Total</th>
-                                        <th className="text-center p-4 text-slate-300 font-medium">Ações</th>
+                                        <th className="text-left p-4 text-slate-300 font-medium w-[100px]">Data</th>
+                                        <th className="text-left p-4 text-slate-300 font-medium w-[140px]">Produto</th>
+                                        <th className="text-left p-4 text-slate-300 font-medium w-[160px]">Sabor</th>
+                                        <th className="text-left p-4 text-slate-300 font-medium w-[140px]">Cliente</th>
+                                        <th className="text-left p-4 text-slate-300 font-medium w-[120px]">Quem Recebeu</th>
+                                        <th className="text-left p-4 text-slate-300 font-medium w-[100px]">Entrega</th>
+                                        <th className="text-left p-4 text-slate-300 font-medium w-[80px]">Fiado</th>
+                                        <th className="text-left p-4 text-slate-300 font-medium w-[120px]">Pagamento</th>
+                                        <th className="text-left p-4 text-slate-300 font-medium w-[100px]">Total</th>
+                                        <th className="text-center p-4 text-slate-300 font-medium w-[100px]">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {currentVendas.map((venda) => (
                                         <tr key={venda.id} className="border-b border-slate-700 hover:bg-slate-750">
                                             <td className="p-4">
-                                                <div className="text-sm">
+                                                <div className="text-sm whitespace-nowrap">
                                                     {formatarData(venda.data_venda || venda.createdAt)}
                                                 </div>
                                             </td>
                                             <td className="p-4 font-medium">
-                                                {venda?.sabor?.produto?.nome ||
-                                                    venda?.produto?.nome ||
-                                                    venda?.produto ||
-                                                    'Produto não informado'}
+                                                <div className="truncate" title={venda?.sabor?.produto?.nome || venda?.produto?.nome || venda?.produto || 'Produto não informado'}>
+                                                    {venda?.sabor?.produto?.nome ||
+                                                        venda?.produto?.nome ||
+                                                        venda?.produto ||
+                                                        'Produto não informado'}
+                                                </div>
                                             </td>
                                             <td className="p-4">
-                                                <span className="bg-cyan-500 px-2 py-1 rounded-full text-xs">
+                                                <span className="bg-cyan-500 px-2 py-1 rounded-full text-xs inline-block max-w-full truncate" title={venda?.sabor?.nome || venda?.sabor || 'Sabor não informado'}>
                                                     {venda?.sabor?.nome ||
                                                         venda?.sabor ||
                                                         'Sabor não informado'}
                                                 </span>
                                             </td>
                                             <td className="p-4">
-                                                {venda?.cliente_nome ||
-                                                    venda?.cliente?.nome ||
-                                                    venda?.cliente ||
-                                                    'Cliente não informado'}
+                                                <div className="truncate" title={venda?.cliente_nome || venda?.cliente?.nome || venda?.cliente || 'Cliente não informado'}>
+                                                    {venda?.cliente_nome ||
+                                                        venda?.cliente?.nome ||
+                                                        venda?.cliente ||
+                                                        'Cliente não informado'}
+                                                </div>
                                             </td>
                                             <td className="p-4">
-                                                {venda?.recebedor?.nome ||
-                                                    venda?.recebedor ||
-                                                    venda?.quem_recebeu ||
-                                                    '-'}
+                                                <div className="truncate" title={venda?.recebedor?.nome || venda?.recebedor || venda?.quem_recebeu || '-'}>
+                                                    {venda?.recebedor?.nome ||
+                                                        venda?.recebedor ||
+                                                        venda?.quem_recebeu ||
+                                                        '-'}
+                                                </div>
                                             </td>
                                             <td className="p-4">
                                                 {(venda.taxa_entrega && venda.taxa_entrega > 0) ? (
                                                     <div className="flex items-center text-green-400">
-                                                        <CheckCircle size={16} className="mr-1" />
+                                                        <CheckCircle size={16} className="mr-1 flex-shrink-0" />
                                                         <span className="text-sm">Sim</span>
                                                     </div>
                                                 ) : (
                                                     <div className="flex items-center text-red-400">
-                                                        <XCircle size={16} className="mr-1" />
+                                                        <XCircle size={16} className="mr-1 flex-shrink-0" />
                                                         <span className="text-sm">Não</span>
                                                     </div>
                                                 )}
@@ -245,29 +291,26 @@ export default function TabelaVendas({
                                             <td className="p-4">
                                                 {venda.fiado ? (
                                                     <div className="flex items-center text-red-400">
-                                                        <CheckCircle size={16} className="mr-1" />
+                                                        <CheckCircle size={16} className="mr-1 flex-shrink-0" />
                                                         <span className="text-sm">Sim</span>
                                                     </div>
                                                 ) : (
                                                     <div className="flex items-center text-green-400">
-                                                        <XCircle size={16} className="mr-1" />
+                                                        <XCircle size={16} className="mr-1 flex-shrink-0" />
                                                         <span className="text-sm">Não</span>
                                                     </div>
                                                 )}
                                             </td>
-                                            <td className="p-4 font-bold text-cyan-400">
+                                            <td className="p-4">
+                                                <div className="truncate" title={venda.forma_pagamento || 'Pagamento não informado'}>
+                                                    {venda.forma_pagamento || 'Pagamento não informado'}
+                                                </div>
+                                            </td>
+                                            <td className="p-4 font-bold text-cyan-400 whitespace-nowrap">
                                                 R$ {(venda.valor || 0).toFixed(2)}
                                             </td>
                                             <td className="p-4">
                                                 <div className="flex items-center justify-center space-x-2">
-                                                    <button
-                                                        // onClick={() => abrirDialogEdicao(venda)}
-                                                        className="p-2 bg-blue-500 hover:bg-blue-600 rounded-md transition-colors hover:cursor-pointer"
-                                                        title="Editar venda"
-                                                    >
-                                                        <Edit size={14} className="text-white" />
-                                                    </button>
-
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
                                                             <button
@@ -325,7 +368,7 @@ export default function TabelaVendas({
                         {/* Paginação */}
                         {totalPages > 1 && (
                             <div className="p-6 border-t border-slate-700">
-                                <div className="flex items-center justify-between">
+                                <div className="flex flex-col  lg:flex-row items-center justify-between">
                                     <div className="text-sm text-slate-400">
                                         Mostrando {startIndex + 1} a {Math.min(endIndex, vendas.length)} de {vendas.length} vendas
                                     </div>
@@ -341,17 +384,23 @@ export default function TabelaVendas({
                                         </button>
 
                                         <div className="flex items-center space-x-1">
-                                            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                                                <button
-                                                    key={page}
-                                                    onClick={() => goToPage(page)}
-                                                    className={`px-3 py-2 rounded-md transition-colors ${page === currentPage
-                                                        ? 'bg-cyan-500 text-white'
-                                                        : 'bg-slate-700 hover:bg-slate-600'
-                                                        }`}
-                                                >
-                                                    {page}
-                                                </button>
+                                            {getPageNumbers().map((page, index) => (
+                                                page === '...' ? (
+                                                    <span key={`ellipsis-${index}`} className="px-3 py-2 text-slate-400">
+                                                        ...
+                                                    </span>
+                                                ) : (
+                                                    <button
+                                                        key={page}
+                                                        onClick={() => goToPage(page as number)}
+                                                        className={`px-3 py-2 rounded-md transition-colors ${page === currentPage
+                                                            ? 'bg-cyan-500 text-white'
+                                                            : 'bg-slate-700 hover:bg-slate-600'
+                                                            }`}
+                                                    >
+                                                        {page}
+                                                    </button>
+                                                )
                                             ))}
                                         </div>
 
@@ -377,9 +426,8 @@ export default function TabelaVendas({
                 isOpen={dialogEdicaoAberto}
                 onClose={fecharDialogEdicao}
                 onSalvar={handleVendaSalva}
-                user={user} // Novo prop necessário
-
+                user={user}
             />
         </>
     );
-};
+}
