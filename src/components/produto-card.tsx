@@ -84,7 +84,7 @@ export default function ProdutoCard({ product }: ProductCardProps) {
 *Forma de Pagamento:* ${data.formaPagamento}
 ${data.observacoes ? `*Observações:* ${data.observacoes}` : ''}
 
-Obrigado por escolher a ElfBPods.`
+Obrigado por escolher a ElfPods.`
 
         const numeroWhatsApp = "5532999392474"
         const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`

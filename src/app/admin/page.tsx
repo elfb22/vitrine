@@ -108,7 +108,7 @@ export default function AdminDashboard() {
                                 Gerencie sua <span className="text-cyan-400 text-glow">Loja</span>
                             </h2>
                             <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-                                Controle total sobre produtos e categorias da sua loja ELFBPODS
+                                Controle total sobre produtos e categorias da sua loja ELFPODS
                             </p>
                         </div>
 
