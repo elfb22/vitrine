@@ -33,7 +33,7 @@ export default function Home() {
 `}</style>
                     <div className="text-red-500 text-center animate-blink">
                         <p className="font-semibold">🚨ATENÇÃO!🚨</p>
-                        <p>Retirada grátis! Em caso de entrega, taxa de apenas R$ 7,00.</p>
+                        <p>TAXA DE ENTREGA R$ 7,00.</p>
                     </div>
                     {/* <div>
 
@@ -132,14 +132,14 @@ export default function Home() {
 
                 <Produtos />
 
-                <div className="">
+                {/* <div className="">
                     <div className="text-center md:mt-16 mt-8 md:p-8 p-4 bg-gray-900/80 rounded-2xl border border-cyan-900/50">
                         <h3 className="text-2xl font-bold text-cyan-400 mb-4">Gostou dos nossos produtos?</h3>
                         <p className="text-gray-300 mb-6">
                             Faça seu pedido clicando no botão azul no produto, ou entre em contato pelo WhatsApp ou Instagram!
                         </p>
 
-                        {/* Botões de contato */}
+                     
                         <div className="flex justify-center gap-4 mb-6">
                             <a
                                 href="https://wa.me/5532999392474?text=Olá!%20Gostaria%20de%20fazer%20um%20pedido"
@@ -166,7 +166,7 @@ export default function Home() {
                             </a>
                         </div>
 
-                        {/* Features */}
+                       
                         <div className="flex justify-center gap-4 flex-wrap">
                             <div className="flex items-center gap-2 text-sm text-gray-300">
                                 <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
@@ -182,7 +182,7 @@ export default function Home() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
             </div>
         </div>
