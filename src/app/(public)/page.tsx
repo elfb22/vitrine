@@ -17,7 +17,7 @@ export default function Home() {
     return (
         <div>
             <Banner />
-            <div className="md:px-20 px-5 py-10">
+            <div className="md:px-20 px-5 pb-5 ">
                 <div className="text-center mb-8">
                     <h2 className="text-3xl md:text-4xl font-bold text-cyan-400 mb-4">Nossa Coleção</h2>
                     <p className="text-gray-300 text-lg mb-6">Encontre o produto perfeito para você</p>
@@ -31,10 +31,17 @@ export default function Home() {
     animation: blink 1.5s infinite;
   }
 `}</style>
-                    <div className="text-red-500 text-center animate-blink">
-                        <p className="font-semibold">🚨ATENÇÃO!🚨</p>
-                        <p>TAXA DE ENTREGA R$ 7,00.</p>
+                    <div className="bg-yellow-400 text-black text-center mt-2 p-4 rounded-lg border-4 border-red-600 animate-bounce">
+                        <p className="font-black text-lg">⚠️ AVISO IMPORTANTE ⚠️</p>
+                        <p className="font-bold mt-1">
+                            Taxa de entrega: R$ 7,00
+                        </p>
+                        <p className="font-extrabold uppercase text-sm mt-1 text-red-700">
+                            Pagamento da taxa é indispensável
+                        </p>
                     </div>
+
+
                     {/* <div>
 
                         <Dialog open={open} onOpenChange={setOpen}>
