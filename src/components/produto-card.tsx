@@ -5,7 +5,7 @@
 import Image from "next/image"
 import { MessageCircle, X, Eye } from "lucide-react"
 import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import {
     Dialog,
     DialogContent,
@@ -59,6 +59,7 @@ export default function ProdutoCard({ product }: ProductCardProps) {
         handleSubmit,
         watch,
         setValue,
+        control,
         formState: { errors },
         reset
     } = useForm<FormData>()
@@ -265,39 +266,54 @@ Obrigado por escolher a ElfPods.`
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <Label className="text-gray-200">Sabor</Label>
-                                            <Select onValueChange={(value) => setValue("sabor", value)}>
-                                                <SelectTrigger className="bg-gray-800 w-full border-gray-700 text-gray-100">
-                                                    <SelectValue placeholder="Selecione o sabor" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-gray-800 border-gray-700">
-                                                    {product.sabores.map((sabor: string, index: number) => (
-                                                        <SelectItem key={index} value={sabor} className="text-gray-100">
-                                                            {sabor}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
+                                            <Controller
+                                                name="sabor"
+                                                control={control}
+                                                rules={{ required: "Selecione um sabor" }}
+                                                render={({ field }) => (
+                                                    <Select onValueChange={field.onChange} value={field.value}>
+                                                        <SelectTrigger className="bg-gray-800 w-full border-gray-700 text-gray-100">
+                                                            <SelectValue placeholder="Selecione o sabor" />
+                                                        </SelectTrigger>
+                                                        <SelectContent className="bg-gray-800 border-gray-700">
+                                                            {product.sabores.map((sabor: string, index: number) => (
+                                                                <SelectItem key={index} value={sabor} className="text-gray-100">
+                                                                    {sabor}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                )}
+                                            />
                                             {errors.sabor && (
-                                                <p className="text-red-400 text-sm">Selecione um sabor</p>
+                                                <p className="text-red-400 text-sm">{errors.sabor.message}</p>
                                             )}
                                         </div>
                                         {/* Forma de Pagamento */}
                                         <div className="space-y-2">
                                             <Label className="text-gray-200">Forma de Pagamento</Label>
-                                            <Select onValueChange={(value) => setValue("formaPagamento", value)}>
-                                                <SelectTrigger className="bg-gray-800 w-full border-gray-700 text-gray-100">
-                                                    <SelectValue placeholder="Selecione a forma de pagamento" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-gray-800 border-gray-700">
-                                                    <SelectItem value="pix" className="text-gray-100">PIX</SelectItem>
-                                                    <SelectItem value="dinheiro" className="text-gray-100">Dinheiro</SelectItem>
-                                                    <SelectItem value="credito" className="text-gray-100">Cartão de Crédito</SelectItem>
-                                                    <SelectItem value="debito" className="text-gray-100">Cartão de Débito</SelectItem>
-                                                </SelectContent>
-                                            </Select>
+                                            <Controller
+                                                name="formaPagamento"
+                                                control={control}
+                                                rules={{ required: "Selecione uma forma de pagamento" }}
+                                                render={({ field }) => (
+                                                    <Select onValueChange={field.onChange} value={field.value}>
+                                                        <SelectTrigger className="bg-gray-800 w-full border-gray-700 text-gray-100">
+                                                            <SelectValue placeholder="Selecione a forma de pagamento" />
+                                                        </SelectTrigger>
+                                                        <SelectContent className="bg-gray-800 border-gray-700">
+                                                            <SelectItem value="pix" className="text-gray-100">PIX</SelectItem>
+                                                            <SelectItem value="dinheiro" className="text-gray-100">Dinheiro</SelectItem>
+                                                            <SelectItem value="credito" className="text-gray-100">Cartão de Crédito</SelectItem>
+                                                            <SelectItem value="debito" className="text-gray-100">Cartão de Débito</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                )}
+                                            />
                                             {errors.formaPagamento && (
-                                                <p className="text-red-400 text-sm">Selecione uma forma de pagamento</p>
+                                                <p className="text-red-400 text-sm">{errors.formaPagamento.message}</p>
                                             )}
+
                                         </div>
                                     </div>
 
