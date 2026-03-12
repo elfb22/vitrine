@@ -208,7 +208,7 @@ Obrigado por escolher a ElfPods.`
                             <DialogTrigger asChild>
                                 <button className="w-full bg-gradient-to-r cursor-pointer from-cyan-700 to-cyan-600 hover:from-cyan-600 hover:to-cyan-500 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-cyan-900/50">
                                     <MessageCircle size={18} />
-                                    Comprar no WhatsApp
+                                    COMPRAR
                                 </button>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[600px] md:max-w-[700px] bg-gray-900 border-gray-800 backdrop-blur-sm" >

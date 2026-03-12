@@ -90,22 +90,17 @@ export default function Vendas() {
             const data: Produto[] = await response.json()
 
             console.log('Dados brutos da API:', data)
-            data.forEach((produto, index) => {
-                console.log(`Produto ${index + 1}:`, {
-                    id: produto.id,
-                    nome: produto.nome,
-                    status: produto.status,
-                    statusType: typeof produto.status
-                })
-            })
 
-            // Ordenar produtos por data de criação decrescente (mais recentes primeiro)
-            const produtosOrdenados = data.sort((a, b) => {
-                const dateA = new Date(a.created_at).getTime()
-                const dateB = new Date(b.created_at).getTime()
-                return dateB - dateA // Decrescente: mais recente primeiro
-            })
-            setProdutos(produtosOrdenados)
+            const produtosAtivos = data
+                .filter(produto => produto.status === 'ATIVO') // filtra
+                .sort((a, b) => { // ordena
+                    const dateA = new Date(a.created_at).getTime()
+                    const dateB = new Date(b.created_at).getTime()
+                    return dateB - dateA
+                })
+
+            setProdutos(produtosAtivos)
+
         } catch (error) {
             console.error('Erro ao buscar produtos:', error)
         }
@@ -339,8 +334,8 @@ export default function Vendas() {
                         <button
                             onClick={() => setCategoriaAtiva("todas")}
                             className={`px-6 py-2 cursor-pointer rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 ${categoriaAtiva === "todas"
-                                    ? "bg-cyan-700 text-white shadow-lg shadow-cyan-900/30"
-                                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                                ? "bg-cyan-700 text-white shadow-lg shadow-cyan-900/30"
+                                : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                                 }`}
                         >
                             Todas
@@ -351,8 +346,8 @@ export default function Vendas() {
                                 key={categoria.id}
                                 onClick={() => setCategoriaAtiva(categoria.id)}
                                 className={`px-6 py-2 cursor-pointer rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 ${categoriaAtiva === categoria.id
-                                        ? "bg-cyan-700 text-white shadow-lg shadow-cyan-900/30"
-                                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                                    ? "bg-cyan-700 text-white shadow-lg shadow-cyan-900/30"
+                                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                                     }`}
                             >
                                 {categoria.nome}
