@@ -33,11 +33,13 @@ export default function Home() {
 `}</style>
                     <div className="bg-yellow-400 text-black text-center mt-2 p-4 rounded-lg border-4 border-red-600 animate-bounce">
                         <p className="font-black text-lg">⚠️ AVISO IMPORTANTE ⚠️</p>
+
                         <p className="font-bold mt-1">
-                            Taxa de entrega: R$ 7,00
+                            Consulte o valor da taxa de entrega com um de nossos vendedores.
                         </p>
+
                         <p className="font-extrabold uppercase text-sm mt-1 text-red-700">
-                            Pagamento da taxa é indispensável
+                            A taxa pode variar de acordo com a região de entrega.
                         </p>
                     </div>
 

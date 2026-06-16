@@ -61,6 +61,7 @@ export default function Produtos() {
         try {
             const response = await fetch('/api/categorias/get')
             const data: Categoria[] = await response.json()
+            console.log('Dados brutos da API CATEORIAS:', data)
             setCategorias(data)
         } catch (error) {
             console.error('Erro ao buscar categorias:', error)

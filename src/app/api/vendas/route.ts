@@ -5,7 +5,6 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json()
@@ -87,16 +86,22 @@ export async function POST(request: NextRequest) {
         // Usar transação para garantir consistência dos dados
         const resultado = await prisma.$transaction(async (tx) => {
             // 1. Reduzir o estoque do sabor
-            await tx.sabor.update({
+            const saborAtualizado = await tx.sabor.update({
                 where: { id: sabor_id },
                 data: {
-                    estoque: {
-                        decrement: quantidade
-                    }
+                    estoque: { decrement: quantidade }
                 }
             })
 
-            // 2. Registrar a venda
+            // 2. Se estoque zerou, desativar o sabor automaticamente
+            if (saborAtualizado.estoque === 0) {
+                await tx.sabor.update({
+                    where: { id: sabor_id },
+                    data: { status: 'DESATIVADO' }
+                })
+            }
+
+            // 3. Registrar a venda
             const novaVenda = await tx.venda.create({
                 data: {
                     sabor_id: sabor_id,
@@ -147,7 +152,6 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error('Erro ao registrar venda:', error)
 
-        // Tratamento de erros específicos do Prisma
         if (error instanceof Error) {
             if (error.message.includes('Foreign key constraint')) {
                 return NextResponse.json(

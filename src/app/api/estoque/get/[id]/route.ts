@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from "@/lib/prisma";
-export async function GET(request: NextRequest,
-    { params }: any) {
 
-
+export async function GET(request: NextRequest, { params }: any) {
     const { id } = await params;
-    console.log('id', id)
 
     try {
         const produtos = await prisma.produto.findMany({
@@ -15,10 +12,14 @@ export async function GET(request: NextRequest,
             },
             include: {
                 sabores: {
+                    where: {
+                        status: 'ATIVO' // só sabores ativos aparecem no estoque
+                    },
                     select: {
                         id: true,
                         nome: true,
-                        estoque: true
+                        estoque: true,
+                        status: true
                     }
                 }
             }
@@ -30,7 +31,8 @@ export async function GET(request: NextRequest,
             sabores: produto.sabores.map(sabor => ({
                 id: sabor.id,
                 nome: sabor.nome,
-                estoque: sabor.estoque
+                estoque: sabor.estoque,
+                status: sabor.status
             }))
         }))
 

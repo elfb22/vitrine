@@ -15,7 +15,6 @@ export async function POST(request: NextRequest) {
         const { produto_id, estoque } = body
         console.log('BODY======', body)
 
-        // Validações básicas
         if (!produto_id || typeof produto_id !== 'number') {
             return NextResponse.json(
                 { error: 'produto_id é obrigatório e deve ser um número' },
@@ -30,15 +29,11 @@ export async function POST(request: NextRequest) {
             )
         }
 
-        // Verificar se o produto existe
         const produto = await prisma.produto.findUnique({
             where: { id: produto_id },
             include: {
                 sabores: {
-                    select: {
-                        id: true,
-                        nome: true
-                    }
+                    select: { id: true, nome: true }
                 }
             }
         })
@@ -50,7 +45,6 @@ export async function POST(request: NextRequest) {
             )
         }
 
-        // Validar se todos os sabores pertencem ao produto
         const saborIdsValidos = produto.sabores.map(s => s.id)
         const saborIdsRecebidos = Object.keys(estoque).map(id => parseInt(id))
 
@@ -65,29 +59,49 @@ export async function POST(request: NextRequest) {
             )
         }
 
+        // Buscar status atual dos sabores para não desativar recém-criados
+        const saboresAtuais = await prisma.sabor.findMany({
+            where: { id: { in: saborIdsRecebidos } },
+            select: { id: true, status: true, estoque: true }
+        })
+        const statusAtual = Object.fromEntries(saboresAtuais.map(s => [s.id, s]))
+
         // Atualizar estoque de cada sabor
+        // Regra: se qty = 0 E o sabor já tinha estoque > 0 antes → desativa
+        //        se qty > 0 → ativa
+        //        se qty = 0 E o sabor era novo (estoque ainda 0) → mantém ATIVO
         const atualizacoes = Object.entries(estoque).map(([saborId, quantidade]) => {
             const id = parseInt(saborId)
-            const qty = Math.max(0, parseInt(String(quantidade)) || 0) // Garantir que seja >= 0
+            const qty = Math.max(0, parseInt(String(quantidade)) || 0)
+            const anterior = statusAtual[id]
+
+            let novoStatus: 'ATIVO' | 'DESATIVADO'
+            if (qty > 0) {
+                novoStatus = 'ATIVO'
+            } else if (anterior?.estoque > 0) {
+                // Tinha estoque e zerou → desativa
+                novoStatus = 'DESATIVADO'
+            } else {
+                // Já estava em 0 (sabor novo ou nunca teve estoque) → mantém status atual
+                novoStatus = anterior?.status ?? 'ATIVO'
+            }
 
             return prisma.sabor.update({
                 where: { id },
-                data: { estoque: qty }
+                data: { estoque: qty, status: novoStatus }
             })
         })
 
-        // Executar todas as atualizações em uma transação
         await prisma.$transaction(atualizacoes)
 
-        // Buscar dados atualizados para retornar
+        // Retornar dados atualizados
         const saboresAtualizados = await prisma.sabor.findMany({
-            where: {
-                produto_id: produto_id
-            },
+            where: { produto_id },
             select: {
                 id: true,
                 nome: true,
-                estoque: true
+                estoque: true,
+                status: true
             }
         })
 
@@ -96,13 +110,17 @@ export async function POST(request: NextRequest) {
             estoqueAtualizado[sabor.id] = sabor.estoque
         })
 
+        // Informar quantos sabores foram desativados por falta de estoque
+        const desativados = saboresAtualizados.filter(s => s.status === 'DESATIVADO' && s.estoque === 0)
+
         return NextResponse.json({
             message: 'Estoque atualizado com sucesso',
             produto: {
                 id: produto.id,
                 nome: produto.nome
             },
-            estoque_atualizado: estoqueAtualizado
+            estoque_atualizado: estoqueAtualizado,
+            sabores_desativados: desativados.map(s => s.nome) // para o frontend exibir aviso se quiser
         })
 
     } catch (error) {
@@ -116,17 +134,16 @@ export async function POST(request: NextRequest) {
     }
 }
 
-// Método GET para buscar estoque de todos os produtos (opcional)
 export async function GET() {
     try {
         const produtos = await prisma.produto.findMany({
-
             include: {
                 sabores: {
                     select: {
                         id: true,
                         nome: true,
-                        estoque: true
+                        estoque: true,
+                        status: true
                     }
                 }
             }
@@ -138,7 +155,8 @@ export async function GET() {
             sabores: produto.sabores.map(sabor => ({
                 id: sabor.id,
                 nome: sabor.nome,
-                estoque: sabor.estoque
+                estoque: sabor.estoque,
+                status: sabor.status
             }))
         }))
 

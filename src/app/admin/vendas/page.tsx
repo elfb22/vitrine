@@ -323,6 +323,11 @@ export default function Vendas() {
 
                                 Voltar
                             </button>
+                            <button onClick={() => router.push('/admin/relatorios')} className="flex items-center cursor-pointer gap-3 px-8 py-4 bg-gradient-to-r from-cyan-700 to-cyan-600 hover:from-cyan-600 hover:to-cyan-500 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-cyan-900/30 transform hover:-translate-y-1">
+                                <FileText color='white' size={20} />
+
+                                Relatórios
+                            </button>
 
                         </div>
                     </div>

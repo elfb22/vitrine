@@ -1,25 +1,32 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+// app/api/produtos/[id]/sabores/route.ts
+import { NextRequest, NextResponse } from 'next/server'
+import { PrismaClient } from '@prisma/client'
 
-export async function GET(request: NextRequest, { params }: any) {
-    console.log('params', params)
-    const id = params.id
-    console.log('id=======', id)
+const prisma = new PrismaClient()
+
+export async function GET(
+    request: NextRequest,
+    { params }: { params: { id: string } }
+) {
     try {
-        const sabores = await prisma.produto.findMany({
-            where: {
-                id: parseInt(id),
-                status: 'ATIVO'
-            },
-            select: {
-                sabores: true
-            }
+        const { id } = await params
+
+        const sabores = await prisma.sabor.findMany({
+            where: { produto_id: parseInt(id) },
+            orderBy: [
+                { status: 'asc' }, // ATIVO vem antes de DESATIVADO
+                { nome: 'asc' }
+            ]
         })
-        console.log('Sabores encontrados:', sabores)
-        return NextResponse.json(sabores)
+
+        return NextResponse.json({ sabores })
     } catch (error) {
         console.error('Erro ao buscar sabores:', error)
-        return NextResponse.json({ error: 'Erro ao buscar sabores' }, { status: 500 })
+        return NextResponse.json(
+            { message: 'Erro interno do servidor' },
+            { status: 500 }
+        )
+    } finally {
+        await prisma.$disconnect()
     }
 }
