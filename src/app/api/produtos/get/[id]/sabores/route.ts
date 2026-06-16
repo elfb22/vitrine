@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/api/produtos/[id]/sabores/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
@@ -6,8 +7,7 @@ const prisma = new PrismaClient()
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+    { params }: any) {
     try {
         const { id } = await params
 

@@ -8,12 +8,9 @@ const prisma = new PrismaClient()
 export async function DELETE(
     request: NextRequest,
     { params }: any
-
 ) {
     try {
         const { id, sabor_id } = await params
-        console.log('id', id)
-        console.log('saborId', sabor_id)
         const sabor = await prisma.sabor.findFirst({
             where: {
                 id: parseInt(sabor_id),
