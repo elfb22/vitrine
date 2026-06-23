@@ -336,8 +336,8 @@ Obrigado por escolher a ElfPods.`
                                         <h4 className="text-gray-200 font-semibold mb-2">Resumo do Pedido</h4>
                                         <div className="text-gray-300 text-sm space-y-1">
                                             <p><strong>Produto:</strong> {product.name}</p>
+                                            <p><strong>Sabor:</strong> {watch("sabor") || "Não selecionado"}</p>
                                             <p><strong>Preço:</strong> R$ {product.price.toFixed(2).replace(".", ",")}</p>
-                                            <p><strong>Taxa de entrega:</strong> R$ 7,00</p>
                                             <p className="text-[10px] text-gray-500">Para retirada, desconsidere a taxa de entrega.</p>
                                         </div>
                                     </div>
