@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     try {
         const body: EstoqueRequest = await request.json()
         const { produto_id, estoque } = body
-        console.log('BODY======', body)
+
 
         if (!produto_id || typeof produto_id !== 'number') {
             return NextResponse.json(
@@ -74,8 +74,7 @@ export async function POST(request: NextRequest) {
             const id = parseInt(saborId)
             const qty = Math.max(0, parseInt(String(quantidade)) || 0)
             const anterior = statusAtual[id]
-
-            let novoStatus: 'ATIVO' | 'DESATIVADO'
+            let novoStatus: 'ATIVO' | 'DESATIVADO' | 'EXCLUIDO';
             if (qty > 0) {
                 novoStatus = 'ATIVO'
             } else if (anterior?.estoque > 0) {
