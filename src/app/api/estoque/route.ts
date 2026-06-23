@@ -85,7 +85,6 @@ export async function POST(request: NextRequest) {
                 // Já estava em 0 (sabor novo ou nunca teve estoque) → mantém status atual
                 novoStatus = anterior?.status ?? 'ATIVO'
             }
-
             return prisma.sabor.update({
                 where: { id },
                 data: { estoque: qty, status: novoStatus }
